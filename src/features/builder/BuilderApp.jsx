@@ -173,18 +173,26 @@ export default function BuilderApp({ docId, onBack }) {
 
   // Curated Google-font options. Values are CSS font-family stacks stored on
   // theme.fontScript / theme.fontSerif. Values reference the next/font CSS
-  // variables declared in src/app/layout.jsx (self-hosted Google fonts).
+  // variables declared in src/index.css (fonts loaded in src/app/layout.jsx).
   const scriptFonts = [
     ["var(--f-pinyon), cursive", "Pinyon Script"],
     ["var(--f-great-vibes), cursive", "Great Vibes"],
     ["var(--f-dancing), cursive", "Dancing Script"],
     ["var(--f-allura), cursive", "Allura"],
+    ["var(--f-tangerine), cursive", "Tangerine"],
+    ["var(--f-sacramento), cursive", "Sacramento"],
+    ["var(--f-parisienne), cursive", "Parisienne"],
+    ["var(--f-petit-formal), cursive", "Petit Formal Script"],
   ];
   const serifFonts = [
     ["var(--f-forum), Georgia, serif", "Forum"],
     ["var(--f-cormorant), Georgia, serif", "Cormorant Garamond"],
     ["var(--f-playfair), Georgia, serif", "Playfair Display"],
     ["var(--f-eb-garamond), Georgia, serif", "EB Garamond"],
+    ["var(--f-cinzel), Georgia, serif", "Cinzel"],
+    ["var(--f-marcellus), Georgia, serif", "Marcellus"],
+    ["var(--f-fraunces), Georgia, serif", "Fraunces"],
+    ["var(--f-libre-baskerville), Georgia, serif", "Libre Baskerville"],
   ];
 
   const assetSlots = [

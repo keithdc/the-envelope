@@ -31,13 +31,6 @@
    relative sizing so sections fit the device, not the browser window.
    --------------------------------------------------------------------- */
 
-/* The real .hero is min-height:100dvh (fills the viewport). Inside the phone
-   it fills the DEVICE SCREEN (now a true 844px-tall phone screen) so there is
-   no empty gap below it — matching an actual device. */
-.pv .hero {
-  min-height: 932px;
-}
-
 /* =====================================================================
    PREVIEW SCALE FIX (container units)
    The real components size text with `vw` (viewport width). Inside the phone
