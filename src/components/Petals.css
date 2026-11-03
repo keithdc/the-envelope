@@ -1,0 +1,48 @@
+.petals {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Blurred color orbs that add warmth and depth to the background */
+.glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.55;
+}
+
+.glow--one {
+  width: 320px;
+  height: 320px;
+  top: -80px;
+  left: -60px;
+  background: radial-gradient(circle, rgba(201, 138, 134, 0.8), transparent 70%);
+}
+
+.glow--two {
+  width: 380px;
+  height: 380px;
+  bottom: -120px;
+  right: -80px;
+  background: radial-gradient(circle, rgba(201, 168, 106, 0.6), transparent 70%);
+}
+
+/* Each falling petal: a soft rounded teardrop shape */
+.petal {
+  position: absolute;
+  top: 0;
+  border-radius: 50% 0 50% 50%;
+  box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.4);
+  will-change: transform, opacity;
+}
+
+.petal--rose {
+  background: linear-gradient(135deg, #e7a9a4, #c98a86);
+}
+
+.petal--blush {
+  background: linear-gradient(135deg, #f6e3df, #e7d2ce);
+}

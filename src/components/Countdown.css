@@ -1,0 +1,103 @@
+.countdown {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-top: 22px;
+}
+
+/* Day-focused headline: "[big number] days to go" / morphing "Today" */
+.cd-headline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--rose-deep, #a9625d);
+}
+
+.cd-headline-icon {
+  /* fixed size + flex:none so the viewport-scaling number next to it can
+     never resize or shift the icon */
+  flex: none;
+  width: 26px;
+  height: 26px;
+  color: var(--gold, #c9a86a);
+  stroke-width: 1.6;
+}
+
+/* the big springing days number (NumberTicker) */
+.cd-days {
+  font-family: var(--font-serif, serif);
+  font-size: clamp(48px, 15vw, 88px);
+  font-weight: 400;
+  line-height: 1;
+  color: var(--ink, #3a3330);
+  font-variant-numeric: tabular-nums;
+}
+
+.cd-days-label {
+  font-family: var(--font-script, cursive);
+  font-size: clamp(22px, 6vw, 34px);
+  color: var(--rose-deep, #a9625d);
+}
+
+/* the "Today" morphing-text state */
+.cd-headline--today {
+  align-items: center;
+}
+
+.cd-morph {
+  font-family: var(--font-script, cursive);
+  font-size: clamp(36px, 10vw, 60px);
+  line-height: 1.1;
+  color: var(--rose-deep, #a9625d);
+  min-width: 5ch;
+}
+
+/* Secondary units row (days/hours/mins/secs) */
+.cd-units {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.cd-unit {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(201, 168, 106, 0.35);
+  border-radius: 14px;
+  padding: 12px 10px;
+  min-width: 66px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 10px 24px -16px rgba(58, 51, 48, 0.5);
+}
+
+.cd-value {
+  font-family: var(--font-serif, serif);
+  font-size: 28px;
+  line-height: 1;
+  color: var(--rose-deep, #a9625d);
+}
+
+.cd-label {
+  margin-top: 6px;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #8a807b;
+}
+
+@media (max-width: 400px) {
+  .cd-units {
+    gap: 7px;
+  }
+  .cd-unit {
+    min-width: 56px;
+    padding: 10px 6px;
+  }
+  .cd-value {
+    font-size: 24px;
+  }
+}

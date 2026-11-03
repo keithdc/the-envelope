@@ -1,0 +1,416 @@
+/* =====================================================================
+   FULL-BLEED ENVELOPE
+   The envelope IS the screen: edge-to-edge, no floating card.
+   ===================================================================== */
+
+.env-fill {
+  position: relative;
+  /* Use 100% (fills the parent) not 100vw. 100vw includes the vertical
+     scrollbar width, which pushes this box wider than the visible area and
+     shifts the centered seal (left:50%) off true center — more so on narrow
+     screens. 100% is scrollbar-safe, so left:50% is exact on every device. */
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  cursor: pointer;
+  outline: none;
+  /* mauve/taupe paper backdrop (seen as the inside when the flap lifts) */
+  background: radial-gradient(
+    130% 90% at 50% 0%,
+    #cdbcbd 0%,
+    #b7a2a3 45%,
+    #9f8788 100%
+  );
+  perspective: 1800px;
+  /* soft paper grain overlay */
+}
+
+/* Reusable petal/paper texture: layered soft radial "petals" + fibers.
+   Applied to the flap and pocket so the whole surface looks like textured
+   paper rather than flat color. */
+.flap-texture,
+.env-pocket::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(
+      60% 80% at 20% 15%,
+      rgba(255, 255, 255, 0.35),
+      transparent 60%
+    ),
+    radial-gradient(
+      55% 75% at 80% 10%,
+      rgba(255, 255, 255, 0.25),
+      transparent 60%
+    ),
+    radial-gradient(
+      70% 90% at 30% 90%,
+      rgba(120, 95, 96, 0.28),
+      transparent 65%
+    ),
+    radial-gradient(
+      65% 85% at 85% 80%,
+      rgba(120, 95, 96, 0.22),
+      transparent 65%
+    );
+  mix-blend-mode: soft-light;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+/* ----------------------------------------------------------------- */
+/* INSIDE / BACK WALL — revealed as the flap lifts                    */
+/* ----------------------------------------------------------------- */
+.env-base {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: radial-gradient(
+    120% 80% at 50% 10%,
+    #efe6e2,
+    #d8c7c4 70%,
+    #c3afad 100%
+  );
+}
+
+/* ----------------------------------------------------------------- */
+/* FRONT POCKET — fills the screen with a big upward V notch          */
+/* The V opening is centered; side walls rise toward the top corners. */
+/* ----------------------------------------------------------------- */
+.env-pocket {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: linear-gradient(170deg, #c6b2b2 0%, #b49c9d 45%, #a2898a 100%);
+  /* Pocket = full screen minus a centered upward-V opening.
+     The V uses three shared points — (0,22%), (50%,46%), (100%,22%) — which
+     the flap also uses, so the two line up perfectly and symmetrically. */
+  clip-path: polygon(0% 100%, 0% 22%, 50% 46%, 100% 22%, 100% 100%);
+}
+
+.env-pocket::before {
+  z-index: 1;
+}
+
+/* ----------------------------------------------------------------- */
+/* RIBBON — satin band down the center, under the seal               */
+/* ----------------------------------------------------------------- */
+/* crisp seam highlight along the pocket's V edges */
+.env-pocket::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(
+    170deg,
+    transparent 60%,
+    rgba(90, 65, 66, 0.25) 100%
+  );
+  clip-path: polygon(0% 100%, 0% 22%, 50% 46%, 100% 22%, 100% 100%);
+  pointer-events: none;
+}
+
+/* ----------------------------------------------------------------- */
+/* FLAP — full-width downward triangle at the top, folds up on open   */
+/* ----------------------------------------------------------------- */
+.env-flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 6;
+  /* fold around the TOP edge; preserve-3d so the back face is a real plane */
+  transform-origin: top center;
+  transform-style: preserve-3d;
+  pointer-events: none;
+}
+
+/* FRONT FACE of the flap (what you see when closed) */
+.env-flap .flap-face {
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(0% 0%, 100% 0%, 100% 22%, 50% 46%, 0% 22%);
+  background: linear-gradient(185deg, #d3c0c0 0%, #bda7a8 55%, #a88f90 100%);
+  backface-visibility: hidden;
+  filter: drop-shadow(0 14px 22px rgba(90, 60, 60, 0.22));
+}
+
+/* BACK FACE (the flap's underside, seen as it folds past vertical).
+   It's the same shape rotated 180° so one face is always presented. */
+.env-flap .flap-back {
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(0% 0%, 100% 0%, 100% 22%, 50% 46%, 0% 22%);
+  background: linear-gradient(185deg, #efe4e0 0%, #ddcac6 60%, #cbb6b2 100%);
+  transform: rotateX(180deg);
+  backface-visibility: hidden;
+}
+
+.flap-texture {
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(0% 0%, 100% 0%, 100% 22%, 50% 46%, 0% 22%);
+}
+
+/* a soft directional sheen across the flap, like the reference */
+.flap-sheen {
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(0% 0%, 100% 0%, 100% 22%, 50% 46%, 0% 22%);
+  background: linear-gradient(
+    110deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.5) 48%,
+    transparent 62%
+  );
+  pointer-events: none;
+}
+
+/* ----------------------------------------------------------------- */
+/* LETTER — tucked inside, rises through the opening                  */
+/* ----------------------------------------------------------------- */
+.env-letter {
+  position: absolute;
+  /* above the pocket (3) and flap (6) so the card clearly emerges on top as
+     it rises. It's invisible (opacity 0) and tucked low while closed. */
+  z-index: 7;
+  left: 50%;
+  top: 14%;
+  /* NOTE: no `transform` here on purpose — Framer Motion controls the
+     transform (x:-50% for centering + y for the slide). A CSS transform here
+     would be overwritten by Motion and break centering. */
+  width: min(84vw, 380px);
+  max-width: 380px;
+  height: min(62vh, 500px);
+  background: #fffdfa;
+  border-radius: 6px;
+  box-shadow: 0 24px 50px -20px rgba(60, 40, 40, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.letter-inner {
+  width: 100%;
+  height: 100%;
+  border: 1px solid rgba(201, 168, 106, 0.6);
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 8%;
+}
+
+.letter-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-size: clamp(10px, 2.6vw, 12px);
+  color: var(--rose-deep);
+}
+
+.letter-rule {
+  width: 44px;
+  height: 1px;
+  background: var(--gold);
+  margin: 14px 0;
+}
+
+.letter-couple {
+  font-family: var(--font-script);
+  font-weight: 400;
+  font-size: clamp(30px, 8vw, 46px);
+  color: var(--ink);
+  line-height: 1.1;
+  max-width: 100%;
+}
+
+.letter-sub {
+  margin-top: 8px;
+  font-size: clamp(11px, 3vw, 14px);
+  color: #8a807b;
+  max-width: 240px;
+}
+
+.letter-date {
+  margin-top: 16px;
+  letter-spacing: 4px;
+  font-size: clamp(11px, 3vw, 13px);
+  color: var(--rose-deep);
+}
+
+/* ----------------------------------------------------------------- */
+/* WAX SEAL — embossed, tonal, at the center seam                     */
+/* ----------------------------------------------------------------- */
+.seal {
+  position: absolute;
+  z-index: 8;
+  /* Center horizontally by subtracting half the seal's own width from 50%
+     (per the requested formula). top:40% places it on the flap seam.
+     No translateX needed since left already accounts for half the width. */
+  width: clamp(104px, 26vw, 156px);
+  height: clamp(104px, 26vw, 156px);
+  left: calc(50% - clamp(104px, 26vw, 156px) / 2);
+  top: 40%;
+  pointer-events: none;
+}
+
+/* The molten-wax blob: an irregular (non-circular) raised puddle of wax with
+   soft drips, sitting just behind the pressed disc. */
+.seal-blob {
+  position: absolute;
+  inset: -8%;
+  /* asymmetric radii = organic, hand-pressed wax edge */
+  border-radius: 46% 54% 50% 50% / 52% 48% 55% 45%;
+  background: radial-gradient(
+    circle at 42% 34%,
+    #e9dad6 0%,
+    #d3bbb7 40%,
+    #b5938f 78%,
+    #9c7a76 100%
+  );
+  box-shadow:
+    0 14px 26px rgba(70, 48, 47, 0.45),
+    0 2px 4px rgba(70, 48, 47, 0.3);
+  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.25));
+}
+
+/* The pressed, domed face of the seal where the monogram is stamped. */
+.seal-disc {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  /* glossy dome: bright specular top-left falling to a dark lower rim */
+  background: radial-gradient(
+    circle at 36% 28%,
+    #f2e7e3 0%,
+    #ddc6c2 38%,
+    #bd9d99 72%,
+    #9d7b77 100%
+  );
+  box-shadow:
+    /* raised top highlight */
+    inset 0 4px 7px rgba(255, 255, 255, 0.75),
+    /* deep lower-rim shadow = domed, pressed look */ inset 0 -10px 18px
+      rgba(70, 48, 47, 0.6),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+}
+
+/* recessed ring pressed into the wax, just inside the rim */
+.seal-disc::before {
+  content: "";
+  position: absolute;
+  inset: 12%;
+  border-radius: 50%;
+  box-shadow:
+    inset 0 2px 3px rgba(70, 48, 47, 0.55),
+    inset 0 -2px 2px rgba(255, 255, 255, 0.5);
+}
+
+/* dotted/beaded inner ring for the classic wax-stamp detail */
+.seal-disc::after {
+  content: "";
+  position: absolute;
+  inset: 17%;
+  border-radius: 50%;
+  border: 2px dotted rgba(90, 62, 60, 0.4);
+}
+
+/* moving specular glint across the dome */
+.seal-shine {
+  position: absolute;
+  top: 10%;
+  left: 18%;
+  width: 46%;
+  height: 32%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 40% 40%,
+    rgba(255, 255, 255, 0.85),
+    rgba(255, 255, 255, 0) 70%
+  );
+  filter: blur(1px);
+  pointer-events: none;
+}
+
+/* Monogram pressed INTO the wax: dark recessed fill with a light bottom edge
+   so it reads as debossed rather than printed on top. */
+.seal-monogram {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-script);
+  font-size: clamp(30px, 8vw, 46px);
+  line-height: 1;
+  color: #7a5753;
+  text-shadow:
+    0 -1px 1px rgba(60, 40, 39, 0.55),
+    0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+/* ----------------------------------------------------------------- */
+/* HINT                                                               */
+/* ----------------------------------------------------------------- */
+.env-hint {
+  position: absolute;
+  z-index: 9;
+  left: 50%;
+  bottom: 8%;
+  transform: translateX(-50%);
+  font-size: clamp(13px, 3.4vw, 16px);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(90, 60, 60, 0.5);
+}
+
+/* ----------------------------------------------------------------- */
+/* OPTIONAL IMAGE ASSETS (for full realism)                          */
+/* These activate automatically when the matching EVENT fields are   */
+/* provided; otherwise the pure-CSS versions above are used.         */
+/* ----------------------------------------------------------------- */
+
+/* Real wax-seal image (transparent PNG) replaces the CSS seal */
+.seal-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 16px rgba(80, 55, 54, 0.45));
+}
+
+/* Paper texture overlay: set `--paper-texture: url(...)` on .env-fill (via an
+   inline style from EVENT.paperTexture) and it tiles over the flap + pocket,
+   blended so it reads as real paper fiber. With no variable set, nothing
+   renders and the CSS gradient surface shows through. */
+.env-flap .flap-face::after,
+.env-pocket .paper-layer {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--paper-texture, none);
+  background-size: cover;
+  mix-blend-mode: multiply;
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+/* Postage stamp on the envelope front, tilted like a hand-placed stamp */
+.env-stamp {
+  position: absolute;
+  z-index: 5; /* on the pocket front, under the flap/seal */
+  right: 7%;
+  bottom: 9%;
+  width: clamp(64px, 17vw, 96px);
+  height: auto;
+  transform: rotate(5deg);
+  filter: drop-shadow(0 6px 10px rgba(90, 60, 60, 0.3));
+  pointer-events: none;
+}

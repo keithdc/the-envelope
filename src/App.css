@@ -1,0 +1,63 @@
+/* Shared card surface used across stages */
+.card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 20px 50px -20px rgba(58, 51, 48, 0.4);
+  padding: 32px 28px;
+  text-align: center;
+}
+
+/* Eyebrow labels use Forum (clean serif) in small-caps-ish spacing — Pinyon
+   Script is too ornate to read at label sizes. */
+.eyebrow {
+  font-family: var(--font-serif);
+  text-transform: uppercase;
+  font-size: 13px;
+  letter-spacing: 4px;
+  color: var(--rose-deep);
+  margin-bottom: 12px;
+}
+
+/* Couple names use Pinyon Script — large so the calligraphy reads clearly. */
+.couple {
+  font-family: var(--font-script);
+  font-size: 44px;
+  color: var(--ink);
+  line-height: 1.1;
+  margin-bottom: 6px;
+}
+
+.hint {
+  font-size: 13px;
+  color: #8a807b;
+  margin-top: 14px;
+}
+
+.divider {
+  width: 48px;
+  height: 1px;
+  background: var(--gold);
+  margin: 16px auto;
+}
+
+/* Floating "back to designs" control shown while viewing an invitation */
+.back-to-designs {
+  position: fixed;
+  z-index: 50;
+  top: 14px;
+  left: 14px;
+  border: none;
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink, #3a3330);
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 6px 16px -8px rgba(58, 51, 48, 0.5);
+  cursor: pointer;
+}
+
+.back-to-designs:hover {
+  background: #fff;
+}

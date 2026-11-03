@@ -1,0 +1,121 @@
+:root {
+  --cream: #faf6f0;
+  --blush: #f3e4e1;
+  --rose: #c98a86;
+  --rose-deep: #a9625d;
+  --ink: #3a3330;
+  --gold: #c9a86a;
+  --sage: #8a9a7b;
+  /* ---- Typography ----
+     --font-script : Pinyon Script — classic calligraphy (names, accents)
+     --font-serif  : Forum — monumental, clean serif (headings, labels)
+     --font-body   : Cormorant Garamond — readable body serif
+     --font-hand   : alias of script (kept so older rules keep working)      */
+  --font-script: "Pinyon Script", "Segoe Script", cursive;
+  --font-serif: "Forum", Georgia, "Times New Roman", serif;
+  --font-body: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --font-hand: "Pinyon Script", "Segoe Script", cursive;
+}
+
+/* ----------------------------------------------------------------------
+   Font helper classes — add one of these to ANY element to pick its font.
+   Example: <h2 className="font-serif">When & Where</h2>
+   ---------------------------------------------------------------------- */
+.font-script {
+  font-family: var(--font-script);
+}
+.font-serif {
+  font-family: var(--font-serif);
+  /* Forum looks best with a little letter-spacing on headings */
+  letter-spacing: 0.5px;
+}
+.font-body {
+  font-family: var(--font-body);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+html,
+body {
+  /* safety net: never allow a horizontal scrollbar to appear */
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 17px;
+  color: var(--ink);
+  /* Layered romantic background: warm radial wash over a soft diagonal blend */
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(243, 228, 225, 0.9),
+      transparent 55%
+    ),
+    radial-gradient(
+      circle at 85% 85%,
+      rgba(201, 168, 106, 0.25),
+      transparent 50%
+    ),
+    linear-gradient(160deg, #fbf4ef 0%, #f4e6e2 45%, #efe0da 100%);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* The intro stages (envelope + scratch) are centered and fill the viewport */
+.app--intro {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* The envelope stage is full-bleed: no padding, no max-width, edge-to-edge */
+.app--full {
+  min-height: 100dvh;
+  position: relative;
+  overflow: hidden;
+}
+
+.stage--full {
+  width: 100%;
+  height: 100dvh;
+}
+
+/* The wedding site stage scrolls like a normal page */
+.app--site {
+  min-height: 100dvh;
+  position: relative;
+}
+
+.stage {
+  width: 100%;
+  max-width: 440px;
+  position: relative;
+  z-index: 1;
+}
+
+.site-wrap {
+  width: 100%;
+}
+
+/* On phones, the intro reads edge-to-edge like a native microsite */
+@media (max-width: 520px) {
+  .app--intro {
+    padding: 16px;
+  }
+}

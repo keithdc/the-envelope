@@ -1,0 +1,468 @@
+.wedding-site {
+  width: 100%;
+  color: var(--ink);
+}
+
+/* ---------------- HERO ---------------- */
+.hero {
+  position: relative;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 24px;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      circle at 50% 30%,
+      rgba(255, 255, 255, 0.5),
+      transparent 60%
+    ),
+    linear-gradient(170deg, #f4e0db 0%, #e9cfca 50%, #dcbcb6 100%);
+}
+
+/* subtle vignette so text stays readable */
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 50% 50%,
+    transparent 40%,
+    rgba(169, 98, 93, 0.18)
+  );
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 480px;
+}
+
+.hero-eyebrow {
+  font-family: var(--font-serif);
+  text-transform: uppercase;
+  letter-spacing: 5px;
+  font-size: 14px;
+  color: var(--rose-deep);
+  margin-bottom: 14px;
+}
+
+.hero-names {
+  font-family: var(--font-script);
+  font-weight: 400;
+  /* Pinyon Script is delicate — size up generously so it reads as elegant
+     calligraphy, not tiny squiggles. */
+  font-size: clamp(64px, 19vw, 104px);
+  line-height: 1.15;
+  color: var(--ink);
+}
+
+.hero-names .amp {
+  color: var(--gold);
+  font-style: italic;
+}
+
+/* small gold flourish separating the names from the date */
+.hero-ornament {
+  width: 64px;
+  height: 1px;
+  margin: 22px auto 18px;
+  background: var(--gold);
+  position: relative;
+}
+
+.hero-ornament::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 7px;
+  height: 7px;
+  transform: translate(-50%, -50%) rotate(45deg);
+  background: var(--gold);
+}
+
+.hero-date {
+  font-size: 18px;
+  letter-spacing: 4px;
+  color: var(--rose-deep);
+}
+
+.hero-place {
+  margin-top: 4px;
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #8a807b;
+}
+
+/* ---------------- SECTION SHELL ---------------- */
+.section {
+  padding: 72px 24px;
+}
+
+.section-inner {
+  max-width: 560px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.section--light {
+  background: #fdfaf7;
+}
+
+.section--rose {
+  background: linear-gradient(160deg, #f6e5e1, #efd6d1);
+}
+
+.section--sage {
+  background: linear-gradient(160deg, #e8ede1, #dce4d2);
+}
+
+/* Section headings use Forum — the monumental serif, uppercased for a clean,
+   classic look that contrasts the Pinyon Script names. */
+.section-title {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 30px;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+/* ---------------- OUR STORY ---------------- */
+.story-list {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  text-align: left;
+  margin-top: 8px;
+}
+
+.story-item {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+}
+
+.story-year {
+  font-family: var(--font-script);
+  font-size: 26px;
+  color: var(--gold);
+  min-width: 62px;
+}
+
+.story-body h3 {
+  font-size: 17px;
+  margin-bottom: 6px;
+  color: var(--rose-deep);
+}
+
+.story-body p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #5f5853;
+}
+
+/* ---------------- DATE & VENUE ---------------- */
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.detail-box {
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 16px;
+  padding: 24px 18px;
+  box-shadow: 0 14px 30px -22px rgba(58, 51, 48, 0.6);
+}
+
+.detail-icon {
+  width: 30px;
+  height: 30px;
+  display: block;
+  margin: 0 auto 10px;
+  color: var(--rose-deep, #a9625d);
+  stroke-width: 1.6;
+}
+
+.detail-box h3 {
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--rose-deep);
+  margin-bottom: 8px;
+}
+
+.detail-box p {
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.muted {
+  color: #8a807b;
+  font-size: 13px !important;
+  margin-top: 4px;
+}
+
+/* ---------------- TIMELINE ---------------- */
+.timeline {
+  list-style: none;
+  margin: 12px auto 0;
+  padding: 0;
+  text-align: left;
+  position: relative;
+  max-width: 460px;
+}
+
+/* (no connector line between markers — icons stand on their own) */
+
+.tl-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  column-gap: 16px;
+  align-items: center;
+  padding-bottom: 22px;
+  /* each item defaults to the rose accent unless its data sets one */
+  --accent: var(--rose-deep, #a9625d);
+}
+
+.tl-item:last-child {
+  padding-bottom: 0;
+}
+
+/* small bare icon tinted by the item's --accent — no circle, no background.
+   A soft glow gives it presence on the rail. */
+.tl-marker {
+  grid-column: 1;
+  justify-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tl-icon {
+  width: 22px;
+  height: 22px;
+  color: var(--accent);
+  stroke-width: 1.75;
+  filter: drop-shadow(
+    0 2px 5px color-mix(in srgb, var(--accent) 45%, transparent)
+  );
+}
+
+.tl-content {
+  grid-column: 2;
+  background: rgba(255, 255, 255, 0.6);
+  border-left: 3px solid var(--accent);
+  border-radius: 10px;
+  padding: 12px 16px;
+  box-shadow: 0 10px 22px -18px rgba(58, 51, 48, 0.6);
+}
+
+.tl-time {
+  display: inline-block;
+  font-family: var(--font-serif, serif);
+  letter-spacing: 1px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 2px;
+}
+
+.tl-content h3 {
+  font-size: 17px;
+  font-weight: 600;
+  margin: 0 0 4px;
+  color: var(--ink);
+}
+
+.tl-content p {
+  font-size: 15px;
+  color: #5f5853;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ---------------- VENUE / MAP ---------------- */
+.venue-name {
+  font-family: var(--font-script);
+  font-size: 26px;
+  color: var(--ink);
+  margin-top: 6px;
+}
+
+.venue-address {
+  font-size: 14px;
+  color: #5f5853;
+  margin-top: 6px;
+}
+
+.map-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--rose-deep);
+  text-decoration: none;
+  border-bottom: 1px solid var(--gold);
+  padding-bottom: 2px;
+}
+
+.map-link-icon {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2;
+}
+
+.map-placeholder {
+  margin-top: 20px;
+  height: 160px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #6f7a63;
+  font-size: 15px;
+  letter-spacing: 1px;
+  background:
+    repeating-linear-gradient(
+      45deg,
+      rgba(138, 154, 123, 0.12) 0 12px,
+      transparent 12px 24px
+    ),
+    rgba(255, 255, 255, 0.5);
+  border: 1px dashed rgba(138, 154, 123, 0.5);
+}
+
+.map-placeholder-icon {
+  width: 22px;
+  height: 22px;
+  color: var(--sage, #8a9a7b);
+  stroke-width: 1.8;
+}
+
+/* ---------------- DRESS CODE ---------------- */
+.dress-text {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #5f5853;
+  margin-top: 4px;
+}
+
+.palette {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.swatch {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  box-shadow: 0 6px 14px -8px rgba(58, 51, 48, 0.7);
+  border: 2px solid #fff;
+}
+
+/* ---------------- RSVP SLOT ---------------- */
+.rsvp-slot {
+  margin-top: 8px;
+}
+
+/* ---------------- FOOTER ---------------- */
+.site-footer {
+  text-align: center;
+  padding: 56px 24px 64px;
+  background: linear-gradient(170deg, #dcbcb6, #a9625d);
+  color: #fff;
+}
+
+.footer-names {
+  font-family: var(--font-script);
+  font-size: 40px;
+}
+
+.footer-date {
+  margin-top: 6px;
+  letter-spacing: 4px;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.footer-note {
+  margin-top: 16px;
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+/* ---------------- RESPONSIVE ---------------- */
+@media (max-width: 480px) {
+  .hero-names {
+    font-size: 48px;
+  }
+  .section {
+    padding: 56px 20px;
+  }
+  .section-title {
+    font-size: 32px;
+  }
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------------- COUNTDOWN SECTION ---------------- */
+.cd-dates {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin: 6px 0 4px;
+  flex-wrap: wrap;
+}
+
+.cd-date {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cd-date-label {
+  font-family: var(--font-serif, serif);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-size: 11px;
+  color: var(--rose-deep, #a9625d);
+}
+
+.cd-date-value {
+  font-size: 16px;
+  color: var(--ink, #3a3330);
+}
+
+.cd-date-arrow {
+  font-size: 22px;
+  color: var(--gold, #c9a86a);
+}
+
+.cd-note {
+  margin-top: 14px;
+  font-family: var(--font-script, cursive);
+  font-size: clamp(22px, 6vw, 30px);
+  color: var(--rose-deep, #a9625d);
+}
+
+@media (max-width: 420px) {
+  .cd-date-arrow {
+    transform: rotate(90deg);
+  }
+}

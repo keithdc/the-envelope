@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240">
+  <defs>
+    <radialGradient id="wax" cx="40%" cy="34%" r="75%">
+      <stop offset="0%" stop-color="#e7d7d4"/>
+      <stop offset="45%" stop-color="#cbb4b1"/>
+      <stop offset="100%" stop-color="#9d7b77"/>
+    </radialGradient>
+    <radialGradient id="shine" cx="38%" cy="30%" r="40%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="1.2"/>
+    </filter>
+    <filter id="drop" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="6" stdDeviation="7" flood-color="#5a3836" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <!-- irregular wax puddle edge -->
+  <path filter="url(#drop)" fill="url(#wax)" d="
+    M120 18
+    C165 14 206 44 214 92
+    C222 140 204 190 160 212
+    C118 233 70 224 42 188
+    C16 154 16 104 38 68
+    C58 36 85 21 120 18 Z"/>
+
+  <!-- domed disc -->
+  <circle cx="120" cy="120" r="78" fill="url(#wax)"/>
+  <!-- specular highlight -->
+  <ellipse cx="98" cy="92" rx="42" ry="30" fill="url(#shine)"/>
+
+  <!-- pressed rings -->
+  <circle cx="120" cy="120" r="66" fill="none" stroke="#5a3e3c" stroke-opacity="0.35" stroke-width="2" filter="url(#soft)"/>
+  <circle cx="120" cy="120" r="58" fill="none" stroke="#5a3e3c" stroke-opacity="0.4" stroke-width="2" stroke-dasharray="2 6"/>
+
+  <!-- monogram -->
+  <text x="120" y="120" text-anchor="middle" dominant-baseline="central"
+        font-family="Georgia, 'Times New Roman', serif" font-size="56" font-style="italic"
+        fill="#7a5753">K&amp;B</text>
+</svg>
