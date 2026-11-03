@@ -12,7 +12,7 @@
  * `theme` values are applied as CSS custom properties on the app root, so they
  * cascade to every component automatically.
  *
- * @type {import('../types.js').Template[]}
+ * @type {import('@/types').Template[]}
  */
 export const templates = [
   {
@@ -26,8 +26,8 @@ export const templates = [
       "--gold": "#c9a86a",
       "--ink": "#3a3330",
       "--blush": "#f3e4e1",
-      "--font-script": "'Pinyon Script', cursive",
-      "--font-serif": "'Forum', Georgia, serif",
+      "--font-script": "var(--f-pinyon), cursive",
+      "--font-serif": "var(--f-forum), Georgia, serif",
     },
     // Envelope image assets ("" => pure-CSS fallback for that piece)
     assets: {
@@ -49,8 +49,8 @@ export const templates = [
       "--gold": "#cbb06a",
       "--ink": "#4a4234",
       "--blush": "#f4efe6",
-      "--font-script": "'Pinyon Script', cursive",
-      "--font-serif": "'Forum', Georgia, serif",
+      "--font-script": "var(--f-pinyon), cursive",
+      "--font-serif": "var(--f-forum), Georgia, serif",
     },
     assets: {
       paperTexture: "/paper-texture.svg",

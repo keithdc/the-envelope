@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { realisticBurst, sideCannons } from "./confetti.js";
+import { realisticBurst, sideCannons } from "../../lib/confetti.js";
 import "./RsvpForm.css";
 
 const EMPTY = { name: "", email: "", attending: "yes", guests: 1, note: "" };

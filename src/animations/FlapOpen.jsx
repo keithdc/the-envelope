@@ -1,4 +1,4 @@
-import Envelope from "../components/Envelope.jsx"
+import Envelope from "../features/invitation/Envelope.jsx";
 
 /**
  * "flap" open animation: the full-bleed envelope whose triangular flap folds
@@ -6,6 +6,6 @@ import Envelope from "../components/Envelope.jsx"
  * ({ data, assets, onOpened }) to the Envelope component's `event` prop.
  */
 export default function FlapOpen({ data, assets, onOpened }) {
-  const event = { ...data, ...assets }
-  return <Envelope event={event} onOpened={onOpened} />
+  const event = { ...data, ...assets };
+  return <Envelope event={event} onOpened={onOpened} />;
 }

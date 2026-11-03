@@ -8,14 +8,27 @@
  * Swap these values (or load them from an API/form) to produce a different
  * invitation without touching any component.
  *
- * @type {import('../types.js').InvitationData}
+ * @type {import('@/types').InvitationData}
  */
-import { formatLong, formatShort, formatTime } from "./dateFormat.js";
+import { formatLong, formatShort, formatTime } from "../lib/date.js";
+import { displayNames, monogram } from "../lib/names.js";
 
 export const invitation = {
-  couple: "Karen & Bert",
-  firstNames: ["Karen", "Bert"],
-  sealMonogram: "K&B",
+  // ---- WHO the event is for — edit `names` (+ joiner); the rest is derived ----
+  // Works for any event type: ["Karen","Bert"] (wedding), ["Mateo"] (birthday).
+  names: ["Karen", "Bert"],
+  nameJoiner: "&",
+  // `firstNames`, `couple` (display string) and `sealMonogram` are computed
+  // from `names` so they never drift. Consumers still read those keys.
+  get firstNames() {
+    return this.names;
+  },
+  get couple() {
+    return displayNames(this.names, this.nameJoiner);
+  },
+  get sealMonogram() {
+    return monogram(this.names, this.nameJoiner);
+  },
   tagline: "are getting married",
 
   // Photo revealed under the scratch medallion ("" => placeholder).

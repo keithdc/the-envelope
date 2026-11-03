@@ -152,7 +152,9 @@ export default function ScratchCard({ event, onRevealed }) {
 
   return (
     <div className="scratch-fill">
-      <p className="eyebrow scratch-eyebrow">The Happy Couple</p>
+      <p className="eyebrow scratch-eyebrow">
+        {event.scratch?.eyebrow ?? "The Celebration"}
+      </p>
       <h1 className="couple scratch-couple">{event.couple}</h1>
 
       {/* Circular scratch medallion */}
@@ -189,7 +191,9 @@ export default function ScratchCard({ event, onRevealed }) {
       </div>
 
       <p className="scratch-hint">
-        {faded ? "Revealed!" : `Scratch the circle · ${percent}%`}
+        {faded
+          ? "Revealed!"
+          : `${event.scratch?.hint ?? "Scratch the circle"} · ${percent}%`}
       </p>
     </div>
   );

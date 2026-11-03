@@ -1,0 +1,103 @@
+.dlg-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: rgba(40, 30, 28, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.dlg {
+  width: min(440px, 100%);
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 30px 60px -30px rgba(40, 30, 28, 0.6);
+  overflow: hidden;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+}
+
+.dlg-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  border-bottom: 1px solid #eee4dd;
+}
+.dlg-head h2 {
+  font-family: "Georgia", serif;
+  font-size: 20px;
+  margin: 0;
+  color: #3a3330;
+}
+.dlg-close {
+  border: none;
+  background: none;
+  color: #8a807b;
+  cursor: pointer;
+  padding: 2px;
+}
+.dlg-close:hover {
+  color: #a9625d;
+}
+
+.dlg-body {
+  padding: 20px;
+}
+
+.dlg-field {
+  display: block;
+  margin-bottom: 16px;
+}
+.dlg-field > span {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #4a443f;
+  margin-bottom: 6px;
+}
+.dlg-field input,
+.dlg-field select {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #e6ddd6;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 14px;
+  color: #3a3330;
+  background: #fff;
+}
+.dlg-field input:focus,
+.dlg-field select:focus {
+  outline: none;
+  border-color: #a9625d;
+}
+
+.dlg-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+}
+.dlg-btn {
+  border: 1px solid #e0d4cc;
+  background: #fff;
+  color: #5f5853;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 9px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.dlg-btn:hover {
+  background: #faf4f0;
+}
+.dlg-btn--primary {
+  background: #a9625d;
+  border-color: #a9625d;
+  color: #fff;
+}
+.dlg-btn--primary:hover {
+  background: #96514c;
+}

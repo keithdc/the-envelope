@@ -25,7 +25,7 @@ export const openAnimations = {
 /**
  * Resolve a key to a component, falling back to the flap envelope.
  * @param {string} key
- * @returns {React.ComponentType<import('../types.js').OpenAnimationProps>}
+ * @returns {React.ComponentType<import('@/types').OpenAnimationProps>}
  */
 export function getOpenAnimation(key) {
   return openAnimations[key] ?? openAnimations.flap;

@@ -1,6 +1,8 @@
-import { motion } from "framer-motion"
-import { templates } from "../data/templates.js"
-import "./TemplatePicker.css"
+"use client";
+
+import { motion } from "framer-motion";
+import { templates } from "../data/templates.js";
+import "./TemplatePicker.css";
 
 /**
  * A simple gallery where you pick a template. Calls onSelect(template) which
@@ -43,5 +45,5 @@ export default function TemplatePicker({ onSelect }) {
         ))}
       </div>
     </div>
-  )
+  );
 }

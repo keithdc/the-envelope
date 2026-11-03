@@ -1,0 +1,518 @@
+.builder-loading {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #8a807b;
+  font-family: Georgia, serif;
+}
+
+/* split layout: config panel + preview stage */
+.builder {
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  background: #f1ece8;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+}
+
+/* ---------------- LEFT PANEL ---------------- */
+.builder-panel {
+  background: #fff;
+  border-right: 1px solid #e6ddd6;
+  padding: 20px;
+  overflow-y: auto;
+  max-height: 100dvh;
+}
+
+.builder-panel-head {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.builder-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #3a3330;
+  border: 1px solid #e6ddd6;
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.builder-save {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 14px;
+  background: #a9625d;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.builder-save:disabled {
+  opacity: 0.6;
+}
+
+.builder-group {
+  margin-bottom: 24px;
+}
+.builder-group h2 {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #8a807b;
+  margin-bottom: 12px;
+}
+
+.color-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.color-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.color-row input[type="color"] {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border: 1px solid #e6ddd6;
+  border-radius: 6px;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+}
+.color-row-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.color-row-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #4a443f;
+}
+.color-row-affects {
+  font-size: 11.5px;
+  line-height: 1.35;
+  color: #9a908a;
+}
+
+/* section toggle/reorder list */
+.section-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.section-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.section-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid #e6ddd6;
+  border-radius: 10px;
+  background: #fdfbf9;
+}
+
+/* when the editor is open below, square off the row's bottom corners */
+.section-item:has(.seditor) .section-row {
+  border-radius: 10px 10px 0 0;
+  border-bottom: none;
+}
+
+.section-row-actions button.is-active {
+  background: #a9625d;
+  color: #fff;
+}
+.section-row.is-off {
+  opacity: 0.5;
+}
+.section-row-icon {
+  color: #a9625d;
+  flex: none;
+}
+.section-row-name {
+  flex: 1;
+  font-size: 14px;
+  color: #3a3330;
+}
+.section-row-actions {
+  display: flex;
+  gap: 2px;
+}
+.section-row-actions button {
+  border: none;
+  background: none;
+  color: #8a807b;
+  padding: 4px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+}
+.section-row-actions button:hover:not(:disabled) {
+  background: #f1ece8;
+  color: #3a3330;
+}
+.section-row-actions button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.builder-hint {
+  margin-top: 12px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #9a908a;
+}
+
+/* ---------------- RIGHT STAGE ---------------- */
+.builder-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  overflow-y: auto;
+  max-height: 100dvh;
+}
+
+/* ---------------------------------------------------------------------
+   TRUE-RESOLUTION PHONE MOCK
+   The device renders at REAL phone pixels — a 390 x 844 screen (iPhone 14/15
+   logical size) inside a 14px bezel. Because the screen is a genuine 390px-wide
+   container, every size the real components compute (via cqw container units)
+   resolves exactly as it would on an actual phone. The whole device is then
+   scaled down with transform to fit the builder panel, so it's dimensionally a
+   real phone, just displayed smaller.
+   --------------------------------------------------------------------- */
+:root {
+  --device-scale: 0.78;
+}
+
+/* wrapper reserves the SCALED footprint so the scaled device doesn't leave a
+   big empty box or overflow the panel */
+.device-shell {
+  width: calc(458px * var(--device-scale));
+  height: calc(960px * var(--device-scale));
+}
+
+.device {
+  position: relative;
+  width: 458px; /* 430 Pro Max screen + 2 x 14 bezel */
+  height: 960px; /* 932 screen + 2 x 14 bezel */
+  background: #1c1b1a;
+  border-radius: 52px;
+  padding: 14px;
+  box-shadow: 0 30px 60px -24px rgba(40, 30, 28, 0.6);
+  transform: scale(var(--device-scale));
+  transform-origin: top center;
+}
+.device-notch {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 150px;
+  height: 26px;
+  background: #1c1b1a;
+  border-radius: 0 0 16px 16px;
+  z-index: 2;
+}
+.device-screen {
+  width: 430px; /* iPhone Pro Max logical width */
+  height: 932px; /* iPhone Pro Max logical height */
+  border-radius: 38px;
+  overflow-y: auto;
+  background: #fff;
+  /* hide the scrollbar but keep scrolling (Firefox + IE) */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  /* The screen is a CSS container (size => both cqw and cqh resolve), so the
+     real components' container-unit sizes map to the true 390x844 phone —
+     matching an actual device. */
+  container-type: size;
+  container-name: device;
+}
+
+/* hide the scrollbar in WebKit/Chromium/Safari */
+.device-screen::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+@media (max-width: 820px) {
+  .builder {
+    grid-template-columns: 1fr;
+  }
+  .builder-panel {
+    max-height: none;
+  }
+}
+
+/* ---------------- ENVELOPE CONFIG ---------------- */
+.env-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 12px;
+}
+.env-field > span {
+  font-size: 12px;
+  color: #5f5853;
+}
+.env-field select,
+.env-field input {
+  font-family: inherit;
+  font-size: 13px;
+  padding: 8px 10px;
+  border: 1px solid #e3d7d3;
+  border-radius: 8px;
+  background: #fff;
+  color: #3a3330;
+  outline: none;
+}
+.env-field select:focus,
+.env-field input:focus {
+  border-color: #c98a86;
+}
+
+.env-assets {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.env-asset {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border: 1px solid #e6ddd6;
+  border-radius: 10px;
+  background: #fdfbf9;
+}
+.env-asset-thumb {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: 8px;
+  background: #f1ece8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: #b4a79f;
+}
+.env-asset-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.env-asset-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.env-asset-label {
+  font-size: 13px;
+  color: #3a3330;
+}
+.env-asset-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.env-upload {
+  font-size: 12px;
+  font-weight: 600;
+  color: #a9625d;
+  cursor: pointer;
+}
+.env-upload input {
+  display: none;
+}
+.env-clear {
+  border: none;
+  background: none;
+  font-size: 12px;
+  color: #9a908a;
+  cursor: pointer;
+  padding: 0;
+}
+.env-clear:hover {
+  color: #a9625d;
+}
+
+/* ---------------- PREVIEW REFRESH ---------------- */
+.builder-stage {
+  position: relative;
+}
+.preview-refresh {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #e0d4cc;
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #a9625d;
+  background: #fff;
+  cursor: pointer;
+  box-shadow: 0 6px 16px -10px rgba(58, 51, 48, 0.5);
+}
+.preview-refresh:hover {
+  background: #fbeeec;
+}
+
+/* back-to-gallery button (builder header) */
+.builder-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  align-self: flex-start;
+  margin-bottom: 12px;
+  border: 1px solid #e6ddd6;
+  background: #fff;
+  color: #6f6660;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 11px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.builder-back:hover {
+  background: #faf4f0;
+  color: #a9625d;
+}
+
+/* helper note shown above the color list */
+.builder-hint--top {
+  margin-top: 0;
+  margin-bottom: 14px;
+}
+
+/* Event details — celebrating names list */
+.names-field {
+  margin-bottom: 14px;
+}
+.names-field-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #4a443f;
+  margin-bottom: 8px;
+}
+.name-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.name-row input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid #e6ddd6;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 14px;
+  color: #3a3330;
+}
+.name-remove {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  border: 1px solid #e6ddd6;
+  background: #fff;
+  color: #a98;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.name-remove:hover:not(:disabled) {
+  color: #c4554d;
+  border-color: #e3c4c0;
+  background: #fdf3f1;
+}
+.name-remove:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.name-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px dashed #d8ccc4;
+  background: #fff;
+  color: #6f6660;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 7px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.name-add:hover {
+  border-color: #a9625d;
+  color: #a9625d;
+}
+
+/* Event details — scratch-reveal photo */
+.photo-field {
+  margin-bottom: 16px;
+}
+.photo-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.photo-thumb {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid #e6ddd6;
+  background: #faf4f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: #b4a79f;
+  text-align: center;
+}
+.photo-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.photo-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}

@@ -1,0 +1,145 @@
+.landing {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 56px 24px 80px;
+  font-family: var(--font-body);
+  color: var(--ink);
+}
+
+.landing-hero {
+  text-align: center;
+  margin-bottom: 44px;
+}
+.landing-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  font-size: 12px;
+  color: var(--rose-deep);
+  font-family: var(--font-serif);
+  margin-bottom: 10px;
+}
+.landing-title {
+  font-family: var(--font-script);
+  font-size: clamp(40px, 7vw, 68px);
+  font-weight: 400;
+  line-height: 1.1;
+  margin-bottom: 14px;
+}
+.landing-sub {
+  font-size: 18px;
+  color: #6f6660;
+  max-width: 520px;
+  margin: 0 auto;
+}
+.landing-sub a {
+  color: var(--rose-deep);
+  font-weight: 600;
+}
+
+.landing-empty {
+  text-align: center;
+  color: #9a908a;
+  font-style: italic;
+}
+
+.landing-cat {
+  margin-bottom: 40px;
+}
+.landing-cat-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-serif);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 15px;
+  color: var(--rose-deep);
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ece2db;
+}
+
+.landing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 18px;
+}
+
+.ltile {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  border: 1px solid #ece2db;
+  border-radius: 14px;
+  background: #fff;
+  overflow: hidden;
+  cursor: pointer;
+  padding: 0;
+  box-shadow: 0 14px 30px -24px rgba(58, 51, 48, 0.5);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+.ltile:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 36px -22px rgba(58, 51, 48, 0.55);
+}
+.ltile-swatches {
+  display: flex;
+  height: 84px;
+}
+.ltile-swatches > span {
+  flex: 1;
+}
+.ltile-title {
+  font-family: var(--font-serif);
+  font-size: 17px;
+  padding: 14px 16px 2px;
+}
+.ltile-cta {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--rose-deep);
+  padding: 0 16px 16px;
+}
+
+/* full-screen preview overlay */
+.lpreview {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  background: #fff;
+  overflow-y: auto;
+}
+.lpreview-close {
+  position: fixed;
+  z-index: 71;
+  top: 14px;
+  left: 14px;
+  border: none;
+  border-radius: 999px;
+  padding: 9px 15px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 6px 16px -8px rgba(58, 51, 48, 0.5);
+  cursor: pointer;
+}
+/* Definite height so the preview's `.pv { height: 100% }` resolves. The
+   envelope/scratch stages fill exactly one viewport; the (taller) site stage
+   overflows and the .lpreview parent scrolls. (See ARCHITECTURE.md gotcha #2:
+   height:100% needs a definite-height parent — min-height does NOT count.) */
+.lpreview-stage {
+  height: 100dvh;
+  /* make this the sizing container so the preview's cqw-based text resolves
+     (in the builder the .device-screen plays this role). */
+  container-type: inline-size;
+}
+/* When the real invitation reaches its scrolling SITE stage, let it grow past
+   one viewport instead of being clipped to 100dvh. */
+.lpreview-stage:has(.pv--site) {
+  height: auto;
+  min-height: 100dvh;
+}

@@ -466,3 +466,53 @@
     transform: rotate(90deg);
   }
 }
+
+/* When the hero has a background image, strengthen the overlay so the names
+   stay readable over any photo/paper. */
+.hero--bg .hero-overlay {
+  background: rgba(255, 253, 251, 0.6);
+}
+
+/* ---------------- SECTION BACKGROUND IMAGE ---------------- */
+/* When a section has a background image, overlay a soft wash so text stays
+   readable regardless of the image. */
+.section--bg {
+  position: relative;
+}
+.section--bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 253, 251, 0.78);
+  z-index: 0;
+}
+.section--bg .section-inner {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------------- ATTIRE TYPES (icons) ---------------- */
+.attire-types {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 22px;
+  margin-top: 8px;
+  margin-bottom: 18px;
+}
+.attire-type {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: var(--rose-deep, #a9625d);
+}
+.attire-type-icon {
+  width: 30px;
+  height: 30px;
+  stroke-width: 1.6;
+}
+.attire-type span {
+  font-size: 13px;
+  color: var(--ink, #3a3330);
+}

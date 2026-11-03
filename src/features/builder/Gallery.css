@@ -1,0 +1,281 @@
+.gallery {
+  min-height: 100dvh;
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 40px 24px 64px;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  color: #3a3330;
+}
+
+.gallery-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.gallery-new {
+  flex: none;
+}
+.gallery-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-size: 11px;
+  color: #a9625d;
+  margin: 0 0 4px;
+}
+.gallery-title {
+  font-family: "Georgia", serif;
+  font-size: 34px;
+  margin: 0;
+}
+
+.gallery-tabs {
+  display: flex;
+  gap: 6px;
+  border-bottom: 1px solid #e6ddd6;
+  margin-bottom: 14px;
+}
+.gallery-tabs button {
+  border: none;
+  background: none;
+  padding: 10px 16px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #9a908a;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+.gallery-tabs button.is-active {
+  color: #a9625d;
+  border-bottom-color: #a9625d;
+}
+.tab-count {
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 11px;
+  background: #f1ece8;
+  color: #8a807b;
+  border-radius: 999px;
+  padding: 1px 7px;
+}
+
+.gallery-note {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #8a807b;
+  margin: 0 0 20px;
+}
+
+/* category filter chips */
+.gallery-cats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0 4px;
+}
+.gallery-cats button {
+  border: 1px solid #e6ddd6;
+  background: #fff;
+  color: #8a807b;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 13px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.gallery-cats button.is-active {
+  background: #a9625d;
+  border-color: #a9625d;
+  color: #fff;
+}
+
+/* category badge on a card */
+.gdoc-cat {
+  display: inline-block;
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #a9625d;
+  margin-bottom: 4px;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 18px;
+}
+
+.gallery-empty {
+  color: #9a908a;
+  font-style: italic;
+}
+
+/* document card */
+.gdoc {
+  background: #fff;
+  border: 1px solid #ece2db;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 14px 30px -24px rgba(58, 51, 48, 0.5);
+}
+.gdoc-swatches {
+  position: relative;
+  display: flex;
+  height: 70px;
+}
+.gdoc-swatches > span {
+  flex: 1;
+}
+.gdoc-status {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  flex: none !important;
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #3a3330;
+}
+.status--published {
+  color: #2e7d52;
+}
+.status--draft {
+  color: #9a6a2e;
+}
+.status--done {
+  color: #2e5d7d;
+}
+
+.gdoc-body {
+  padding: 14px 16px 16px;
+}
+.gdoc-title {
+  font-family: "Georgia", serif;
+  font-size: 18px;
+  margin: 0 0 2px;
+}
+.gdoc-sub {
+  font-size: 11px;
+  color: #b4a79f;
+  margin: 0 0 12px;
+}
+.gdoc-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.g-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid #e0d4cc;
+  background: #fff;
+  color: #5f5853;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 7px 11px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.g-btn:hover {
+  background: #fbf4f0;
+}
+.g-btn--primary {
+  background: #a9625d;
+  border-color: #a9625d;
+  color: #fff;
+}
+.g-btn--primary:hover {
+  background: #96514c;
+}
+
+/* version drawer */
+.vdrawer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: rgba(40, 30, 28, 0.35);
+  display: flex;
+  justify-content: flex-end;
+}
+.vdrawer {
+  width: min(420px, 90vw);
+  height: 100%;
+  background: #fff;
+  padding: 22px;
+  overflow-y: auto;
+  box-shadow: -20px 0 50px -30px rgba(40, 30, 28, 0.6);
+}
+.vdrawer-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 18px;
+}
+.vdrawer-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 10px;
+  color: #a9625d;
+  margin: 0 0 2px;
+}
+.vdrawer-head h2 {
+  font-family: "Georgia", serif;
+  font-size: 20px;
+  margin: 0;
+}
+.vdrawer-close {
+  border: none;
+  background: none;
+  color: #8a807b;
+  cursor: pointer;
+}
+.vdrawer-loading {
+  color: #9a908a;
+}
+
+.vlist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.vrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid #ece2db;
+  border-radius: 10px;
+}
+.vrow-v {
+  font-weight: 700;
+  color: #a9625d;
+  margin-right: 8px;
+}
+.vrow-label {
+  font-size: 13px;
+}
+.vrow-date {
+  display: block;
+  font-size: 11px;
+  color: #9a908a;
+  margin-top: 2px;
+}
+.vrow-current {
+  font-size: 11px;
+  color: #2e7d52;
+  font-weight: 600;
+}

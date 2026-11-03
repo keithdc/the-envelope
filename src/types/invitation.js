@@ -1,16 +1,16 @@
 /**
- * SHARED TYPE DEFINITIONS ("interfaces")
+ * INVITATION & TEMPLATE INTERFACES
  * =========================================================================
- * This is a plain-JavaScript project, so "interfaces" are expressed as JSDoc
- * @typedefs. Editors (VS Code) and other tools/AIs read these for
- * autocomplete, hover docs, and type-checking. Import a type in another file
- * with:  @type {import('../types.js').InvitationData}
+ * JSDoc @typedefs for the rendered invitation's content + the presentation
+ * template. Plain-JS "interfaces": editors/tools read these for autocomplete
+ * and checking. Nothing is exported at runtime.
  *
- * Nothing is exported at runtime — this file is documentation only.
+ * Reference a type from anywhere with the `@/` alias (see jsconfig.json):
+ *   @type {import('@/types').InvitationData}
  */
 
 /* --------------------------------------------------------------------- */
-/* INVITATION DATA — the couple's content (see data/invitation.js)       */
+/* INVITATION DATA — the celebrant's content (see features/.../data)      */
 /* --------------------------------------------------------------------- */
 
 /**
@@ -19,12 +19,12 @@
  * @property {string} time   Display time, e.g. "4:00 PM"
  * @property {string} title  Short label, e.g. "Ceremony"
  * @property {string} text   One-line description
- * @property {string} [icon] Icon key resolved via components/icons.js (getIcon)
+ * @property {string} [icon] Icon key resolved via lib/icons.js (getIcon)
  * @property {string} [accent] Hex color for the marker, e.g. "#a9625d"
  */
 
 /**
- * One chapter of the couple's story.
+ * One chapter of the story / milestones section.
  * @typedef {Object} StoryItem
  * @property {string} year
  * @property {string} title
@@ -37,15 +37,19 @@
  * @property {string} title
  * @property {string} text
  * @property {string[]} palette  Hex colors shown as swatches
+ * @property {{label:string, icon?:string}[]} [attireTypes]
  */
 
 /**
- * The full set of content a couple supplies (via a form, JSON, or API). It
- * contains NO styling or component references — the Template decides the look.
+ * The full set of content supplied for one event. Contains NO styling or
+ * component references — the Template decides the look. Event-type agnostic
+ * (wedding, birthday, …): `names` holds one or more honorees.
  * @typedef {Object} InvitationData
- * @property {string} couple        Full couple string, e.g. "Karen & Bert"
- * @property {[string,string]} firstNames  ["Karen", "Bert"]
- * @property {string} sealMonogram  e.g. "K&B"
+ * @property {string} couple        Joined display name, e.g. "Karen & Bert"
+ * @property {string[]} names       ["Karen","Bert"] or ["Mateo"]
+ * @property {string[]} firstNames  Alias of names (kept for consumers)
+ * @property {string} nameJoiner    e.g. "&"
+ * @property {string} sealMonogram  e.g. "K & B"
  * @property {string} tagline
  * @property {string} [photo]       URL/path for the scratch-medallion photo
  * @property {string} dateISO       ISO datetime powering the countdown
@@ -62,7 +66,7 @@
  */
 
 /* --------------------------------------------------------------------- */
-/* TEMPLATE — the LOOK + chosen opening (see data/templates.js)          */
+/* TEMPLATE — the LOOK + chosen opening (legacy data/templates.js)        */
 /* --------------------------------------------------------------------- */
 
 /**

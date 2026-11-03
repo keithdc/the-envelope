@@ -11,10 +11,33 @@
      --font-serif  : Forum — monumental, clean serif (headings, labels)
      --font-body   : Cormorant Garamond — readable body serif
      --font-hand   : alias of script (kept so older rules keep working)      */
-  --font-script: "Pinyon Script", "Segoe Script", cursive;
-  --font-serif: "Forum", Georgia, "Times New Roman", serif;
-  --font-body: "Cormorant Garamond", Georgia, "Times New Roman", serif;
-  --font-hand: "Pinyon Script", "Segoe Script", cursive;
+  /* Font-family tokens for each loaded Google face (see src/app/layout.jsx).
+     The builder's font pickers + document themes reference these by name. */
+  /* Script faces (names / calligraphy) */
+  --f-pinyon: "Pinyon Script";
+  --f-great-vibes: "Great Vibes";
+  --f-dancing: "Dancing Script";
+  --f-allura: "Allura";
+  --f-tangerine: "Tangerine";
+  --f-sacramento: "Sacramento";
+  --f-parisienne: "Parisienne";
+  --f-petit-formal: "Petit Formal Script";
+  /* Serif faces (headings / labels / body) */
+  --f-forum: "Forum";
+  --f-cormorant: "Cormorant Garamond";
+  --f-playfair: "Playfair Display";
+  --f-eb-garamond: "EB Garamond";
+  --f-cinzel: "Cinzel";
+  --f-marcellus: "Marcellus";
+  --f-fraunces: "Fraunces";
+  --f-libre-baskerville: "Libre Baskerville";
+
+  /* Defaults; a document's theme overrides --font-script / --font-serif /
+     --font-body at the preview root. */
+  --font-script: var(--f-pinyon), "Segoe Script", cursive;
+  --font-serif: var(--f-forum), Georgia, "Times New Roman", serif;
+  --font-body: var(--f-cormorant), Georgia, "Times New Roman", serif;
+  --font-hand: var(--f-pinyon), "Segoe Script", cursive;
 }
 
 /* ----------------------------------------------------------------------
@@ -111,6 +134,16 @@ body {
 
 .site-wrap {
   width: 100%;
+}
+
+/* shared tiny loading text (landing / invite / admin) */
+.builder-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+  color: #9a908a;
+  font-family: var(--font-body);
 }
 
 /* On phones, the intro reads edge-to-edge like a native microsite */

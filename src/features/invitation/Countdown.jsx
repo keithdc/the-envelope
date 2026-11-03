@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { CalendarHeart } from "lucide-react";
-import NumberTicker from "./NumberTicker.jsx";
-import MorphingText from "./MorphingText.jsx";
+import NumberTicker from "../../ui/NumberTicker.jsx";
+import MorphingText from "../../ui/MorphingText.jsx";
 import "./Countdown.css";
 
 /**

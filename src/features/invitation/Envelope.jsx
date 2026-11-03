@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { OPEN_TIMING as T } from "../animations/timing.js";
+import { OPEN_TIMING as T } from "../../animations/timing.js";
 import "./Envelope.css";
 
 /**

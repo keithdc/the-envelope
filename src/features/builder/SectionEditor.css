@@ -1,0 +1,167 @@
+.seditor {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px 12px 14px;
+  background: #fbf7f3;
+  border: 1px solid #e6ddd6;
+  border-top: none;
+  border-radius: 0 0 10px 10px;
+}
+
+.seditor-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.seditor-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: #8a807b;
+}
+
+.seditor-field input,
+.seditor-field textarea,
+.seditor-field select {
+  font-family: inherit;
+  font-size: 13px;
+  padding: 7px 9px;
+  border: 1px solid #e3d7d3;
+  border-radius: 7px;
+  background: #fff;
+  color: #3a3330;
+  outline: none;
+}
+.seditor-field input:focus,
+.seditor-field textarea:focus,
+.seditor-field select:focus {
+  border-color: #c98a86;
+}
+.seditor-field textarea {
+  resize: vertical;
+}
+.seditor-color {
+  width: 44px;
+  height: 30px;
+  padding: 0;
+  cursor: pointer;
+}
+
+.seditor-help {
+  font-size: 11px;
+  color: #9a908a;
+}
+
+/* ---- list ---- */
+.seditor-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.seditor-list-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.seditor-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid #c98a86;
+  background: #fff;
+  color: #a9625d;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 9px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.seditor-add:hover {
+  background: #fbeeec;
+}
+
+.seditor-empty {
+  font-size: 12px;
+  color: #9a908a;
+  font-style: italic;
+}
+
+.seditor-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 10px 12px;
+  padding-right: 34px;
+  background: #fff;
+  border: 1px solid #ece2db;
+  border-radius: 8px;
+}
+
+.seditor-remove {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  border: none;
+  background: none;
+  color: #b98a86;
+  padding: 4px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+}
+.seditor-remove:hover {
+  background: #fbeeec;
+  color: #a9625d;
+}
+
+/* ---- image / background control ---- */
+.seditor-image {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.seditor-image-thumb {
+  width: 48px;
+  height: 36px;
+  flex: none;
+  border-radius: 6px;
+  border: 1px solid #e3d7d3;
+  background-size: cover;
+  background-position: center;
+  background-color: #f1ece8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.seditor-image-empty {
+  font-size: 10px;
+  color: #b4a79f;
+}
+.seditor-image-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.seditor-upload {
+  font-size: 12px;
+  font-weight: 600;
+  color: #a9625d;
+  cursor: pointer;
+}
+.seditor-upload input {
+  display: none;
+}
+.seditor-img-clear {
+  border: none;
+  background: none;
+  font-size: 12px;
+  color: #9a908a;
+  cursor: pointer;
+  padding: 0;
+}
+.seditor-img-clear:hover {
+  color: #a9625d;
+}

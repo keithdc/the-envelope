@@ -1,5 +1,5 @@
-import { useEffect } from 'react'
-import { realisticBurst, sideCannons, heartsFall } from './confetti.js'
+import { useEffect } from "react";
+import { realisticBurst, sideCannons, heartsFall } from "../lib/confetti.js";
 
 /**
  * Declarative confetti trigger, inspired by Magic UI's <Confetti /> component.
@@ -10,13 +10,13 @@ import { realisticBurst, sideCannons, heartsFall } from './confetti.js'
  *   effect: 'realistic' | 'cannons' | 'hearts'  (default 'realistic')
  *   fire:   when true, runs the effect on mount / when it flips to true
  */
-export default function Confetti({ effect = 'realistic', fire = true }) {
+export default function Confetti({ effect = "realistic", fire = true }) {
   useEffect(() => {
-    if (!fire) return
-    if (effect === 'cannons') sideCannons()
-    else if (effect === 'hearts') heartsFall()
-    else realisticBurst()
-  }, [effect, fire])
+    if (!fire) return;
+    if (effect === "cannons") sideCannons();
+    else if (effect === "hearts") heartsFall();
+    else realisticBurst();
+  }, [effect, fire]);
 
-  return null
+  return null;
 }

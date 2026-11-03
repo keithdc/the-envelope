@@ -1,11 +1,13 @@
-import { useState } from "react"
-import { AnimatePresence, motion } from "framer-motion"
-import ScratchCard from "./ScratchCard.jsx"
-import WeddingSite from "./WeddingSite.jsx"
-import { getOpenAnimation } from "../animations/registry.jsx"
-import { heartsFall, realisticBurst } from "./confetti.js"
+"use client";
 
-const STAGES = { OPEN: "open", SCRATCH: "scratch", SITE: "site" }
+import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import ScratchCard from "./ScratchCard.jsx";
+import InvitationSite from "./InvitationSite.jsx";
+import { getOpenAnimation } from "../../animations/registry.jsx";
+import { heartsFall, realisticBurst } from "../../lib/confetti.js";
+
+const STAGES = { OPEN: "open", SCRATCH: "scratch", SITE: "site" };
 
 /**
  * Renders one invitation from a TEMPLATE + DATA.
@@ -16,12 +18,12 @@ const STAGES = { OPEN: "open", SCRATCH: "scratch", SITE: "site" }
  * Swapping the template changes the look + opening without touching sections.
  */
 export default function Invitation({ template, data }) {
-  const [stage, setStage] = useState(STAGES.OPEN)
-  const [rsvp, setRsvp] = useState(null)
+  const [stage, setStage] = useState(STAGES.OPEN);
+  const [rsvp, setRsvp] = useState(null);
 
-  const OpenAnimation = getOpenAnimation(template.openAnimation)
-  const isSite = stage === STAGES.SITE
-  const appClass = isSite ? "app--site" : "app--full"
+  const OpenAnimation = getOpenAnimation(template.openAnimation);
+  const isSite = stage === STAGES.SITE;
+  const appClass = isSite ? "app--site" : "app--full";
 
   // template.theme is a { "--var": "value" } map applied inline so it cascades.
   return (
@@ -56,9 +58,9 @@ export default function Invitation({ template, data }) {
             <ScratchCard
               event={data}
               onRevealed={() => {
-                realisticBurst()
-                heartsFall({ durationMs: 2200 })
-                setStage(STAGES.SITE)
+                realisticBurst();
+                heartsFall({ durationMs: 2200 });
+                setStage(STAGES.SITE);
               }}
             />
           </motion.div>
@@ -72,10 +74,10 @@ export default function Invitation({ template, data }) {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
           >
-            <WeddingSite event={data} rsvp={rsvp} onRsvp={setRsvp} />
+            <InvitationSite event={data} rsvp={rsvp} onRsvp={setRsvp} />
           </motion.div>
         )}
       </AnimatePresence>
     </div>
-  )
+  );
 }
