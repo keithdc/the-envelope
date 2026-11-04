@@ -25,24 +25,34 @@ feature is self-contained:
 ```
 src/
   app/                 Next.js App Router routes (pages + layout only)
-    page.jsx           /            → features/landing
-    i/[slug]/          /i/[slug]    → public invitation (stub)
+    (site)/            public marketing pages, shared header + footer
+      page.jsx         /            → features/landing/HomePage
+      designs/         /designs     → DesignsGallery (all, by category)
+      pricing/         /pricing     → PricingSection + FAQ
+      faq/             /faq         → FaqSection
+    i/[slug]/          /i/<token>   → private client invitation (share token)
     admin/             /admin, /admin/[id] → the studio
   types/               ALL JSDoc interfaces (one import surface, @/types)
     invitation.js      InvitationData, Template, OpenAnimationProps, …
     document.js        InvitationDocument, Theme, Category, SectionConfig, …
     index.js           barrel — import('@/types')
   lib/                 shared PURE functions (no React): date, names, icons, confetti
-  services/            data access: invitationApi, mockStore/mockDocument,
+  services/            data access (mocks shaped like the future API, BACKEND.md):
+                       authApi, activityApi, session (mock core),
+                       invitationApi, mockStore/mockDocument,
                        categories, documentAdapter (document → render `event`)
   features/
     invitation/        the rendered invitation: InvitationSite, Envelope,
                        ScratchCard, Countdown, RsvpForm, Invitation
     builder/           the admin builder: BuilderApp, BuilderPreview, Gallery,
                        Dialog, SectionEditor, sectionRegistry
-    landing/           the public landing (published templates by category)
+    landing/           the public site: HomePage, SiteHeader/Footer, LiveDemo,
+                       DesignsGallery, PricingSection, FaqSection,
+                       siteContent.js (ALL marketing copy/prices/stats)
   ui/                  generic reusable UI/effects: Confetti, Petals,
-                       NumberTicker, MorphingText, TemplatePicker
+                       NumberTicker, MorphingText, TemplatePicker, and the
+                       Magic UI ports: PhoneFrame, Marquee, ShimmerButton,
+                       AnimatedGradientText, BorderBeam, DotPattern, BlurFade
   animations/          swappable opening animations (flap / unfold) + timing
   data/                legacy public demo data (invitation.js, templates.js)
   index.css            global stylesheet + font variables
@@ -58,21 +68,54 @@ Rules of thumb:
 
 ## Framework: Next.js (App Router)
 
-The app is a **Next.js 14 App Router** project (migrated from Vite + react-router).
-The route tree lives in `src/app/` (file-based routing).
+The app is a **Next.js 15 App Router** project on **React 19** (migrated from
+Vite + react-router, then upgraded from Next 14). The route tree lives in
+`src/app/` (file-based routing).
 
-| Path          | File                       | Rendering           | Purpose                                          |
-| ------------- | -------------------------- | ------------------- | ------------------------------------------------ |
-| `/`           | `app/page.jsx` → `Landing` | Static shell + CSR  | Public landing: PUBLISHED templates by category. |
-| `/i/[slug]`   | `app/i/[slug]/page.jsx`    | Dynamic (SSR-ready) | Public invitation view (stub; reads mock by id). |
-| `/admin`      | `app/admin/page.jsx`       | Static shell + CSR  | The studio gallery (Templates / Projects).       |
-| `/admin/[id]` | `app/admin/[id]/page.jsx`  | Dynamic             | The visual builder for one document.             |
+### Dev server & bundler
+
+| Command         | What it runs                   | Bundler              |
+| --------------- | ------------------------------ | -------------------- |
+| `npm run dev`   | `next dev --turbopack -p 5500` | **Turbopack** (fast) |
+| `npm run build` | `next build`                   | webpack (stable)     |
+| `npm run start` | `next start -p 5500`           | serves the build     |
+
+- **Dev uses Turbopack.** It's stable for `next dev` in Next 15 and compiles
+  much faster than the webpack dev compiler. Production `build` intentionally
+  stays on webpack, since Turbopack builds are still beta in Next 15.
+- **Port is pinned to 5500** so a leftover server on 3000 can't silently push
+  you onto 3001 and leave the browser stuck on a dead tab.
+- `next.config.mjs` enables `experimental.optimizePackageImports` for
+  `react-icons`, `lucide-react`, and `framer-motion` (avoids compiling whole
+  icon barrels).
+- The public pages lazy-load `BuilderPreview` with `next/dynamic` (`ssr:false`)
+  in `LiveDemo` and the `DesignsGallery` preview dialog, so the heavy
+  invitation tree loads after the page shell.
+- **Windows tip:** if first compiles are still slow, add a Microsoft Defender
+  exclusion for the project folder and `node.exe`. Real-time scanning of
+  `node_modules`/`.next` was the main cause of 60s+ compiles here.
+- **Next 15 note:** `params` became async for server components. `/admin/[id]`
+  is a client component using `useParams()`. `/i/[slug]` is a server page and
+  already does `const { slug } = await params`. Any new server page that reads
+  `params` must `await` it.
+
+| Path          | File                      | Rendering          | Purpose                                         |
+| ------------- | ------------------------- | ------------------ | ----------------------------------------------- |
+| `/`           | `app/(site)/page.jsx`     | Static shell + CSR | Home: live phone demo + all marketing sections. |
+| `/designs`    | `app/(site)/designs/…`    | Static shell + CSR | PUBLISHED templates by category, live preview.  |
+| `/pricing`    | `app/(site)/pricing/…`    | Static             | Plans (sample prices) + FAQ.                    |
+| `/faq`        | `app/(site)/faq/…`        | Static             | FAQ accordion.                                  |
+| `/i/[slug]`   | `app/i/[slug]/page.jsx`   | Dynamic (server)   | Private client invitation — share token only.   |
+| `/admin`      | `app/admin/page.jsx`      | Static shell + CSR | The studio gallery (Templates / Projects).      |
+| `/admin/[id]` | `app/admin/[id]/page.jsx` | Dynamic            | The visual builder for one document.            |
 
 ### Server vs client components
 
-- `app/layout.jsx` and `app/page.jsx` are **server components** (the SSR shell).
+- `app/layout.jsx`, `app/(site)/layout.jsx` and the `(site)` pages are
+  **server components** (the SSR shell + per-page `metadata`).
 - Everything interactive is a **client component** marked `'use client'`:
-  `Landing`, `Gallery`, `Dialog`, `BuilderApp`, `BuilderPreview`, `Invitation`,
+  `HomePage`, `SiteHeader`, `SiteFooter`, `LiveDemo`, `DesignsGallery`,
+  `Gallery`, `Dialog`, `BuilderApp`, `BuilderPreview`, `Invitation`,
   `TemplatePicker`. `'use client'` cascades — a client component's imported
   children are automatically client too, so leaf components (ScratchCard,
   InvitationSite, Envelope, animations…) don't each need the directive.
@@ -100,9 +143,12 @@ variables (`var(--f-pinyon), cursive`). (We use a `<link>` rather than
 
 ```
 app/layout.jsx (server: fonts + global CSS)
-  ├─ app/page.jsx → Landing            (client) — published templates by category
-  │     └─ click a tile → BuilderPreview(doc) overlay
-  ├─ app/i/[slug]/page.jsx             (client) — BuilderPreview(doc) [public invite stub]
+  ├─ app/(site)/layout.jsx             (server) — SiteHeader + SiteFooter, site.css
+  │     ├─ page.jsx → HomePage          (client) — hero LiveDemo phone + all sections
+  │     ├─ designs/ → DesignsGallery    (client) — "Preview live" → phone dialog
+  │     ├─ pricing/ → PricingSection + FaqSection
+  │     └─ faq/     → FaqSection
+  ├─ app/i/[slug]/page.jsx             (server: noindex) → SharedInvitation(token) — client link
   ├─ app/admin/page.jsx → Gallery      (client) — Templates / Projects + category filter
   └─ app/admin/[id]/page.jsx → BuilderApp(docId)  (client) — the visual editor
 ```
@@ -239,7 +285,26 @@ recorded so nobody repeats the investigation.
    device-screen height = 740px device − 2×12px padding) so the hero fills the
    phone with no empty gap.
 
-4. **Preview text is oversized — `vw` measures the window, not the phone mock.**
+4. **Dev server crashes with `ENOENT ... .next/server/app/.../app-build-manifest.json`.**
+   Cause: `next build` was run while `next dev` was running, and both wrote to
+   `.next`. The build wiped the dev server's files. Fix: `next.config.mjs` is
+   a function of the phase. `next dev` writes to **`.next-dev`** and
+   `next build` / `next start` use **`.next`**, so they can run side by side.
+   Don't point both at the same `distDir` again.
+
+5. **Two scrollbars, header-nav anchors don't smooth-scroll, `window.scrollY`
+   stays 0.** Cause: `index.css` had `html, body { height: 100%; overflow-x:
+hidden }`. `overflow-x: hidden` on both html and body, with body at a fixed
+   100% height, turns `<body>` into its own scroll container. The page then
+   scrolls inside body while html shows a second scrollbar, and smooth anchor
+   scrolling (which targets the window) has nothing to do. Fix: never fix
+   body's height; use `min-height: 100%` and `overflow-x: clip` (clip hides
+   overflow WITHOUT creating a scroll container). Smooth scrolling is
+   `html { scroll-behavior: smooth }` (off for reduced motion) plus
+   `data-scroll-behavior="smooth"` on `<html>` in `app/layout.jsx`, so the
+   Next router respects it.
+
+6. **Preview text is oversized — `vw` measures the window, not the phone mock.**
    The real components size type with `vw` (e.g. hero names `clamp(64px,19vw,104px)`).
    Inside the builder's phone frame, `vw` STILL measures the desktop browser
    window, so everything is huge. Fix (scoped to the preview only, never the
@@ -331,6 +396,105 @@ Rules enforced by the API (`services/invitationApi.js`):
 Seed data lives in `services/mockStore.js` (three templates — a published +
 draft wedding and a published birthday — and a sample project with a version).
 The API seeds localStorage from it.
+
+### Admin users, sign-in & permissions (mock)
+
+**Backend contract: see [BACKEND.md](./BACKEND.md)** (schema, endpoints,
+auth flow, security checklist, migration steps).
+
+- Routes: `/login` (outside the admin group, noindex), and `/admin/*` wrapped by
+  `app/admin/layout.jsx` → `AuthProvider` + `AdminGuard` (redirects to
+  `/login?next=…`). Pages inside `AdminShell` (sidebar): `/admin` (designs),
+  `/admin/users` (Team), `/admin/activity`, `/admin/settings`. The builder
+  `/admin/[id]` is guarded but has no sidebar.
+- Roles `owner | admin | designer`. **One permission matrix:
+  `lib/permissions.js`** (`can`, `canManageUser`, `assignableRoles`). The UI
+  hides actions with `can()`. The mock services re-check with
+  `assertCan()` (`services/session.js`), the same way the backend will.
+- Services: `authApi.js` (login, session, password, profile, users, settings),
+  `activityApi.js` (append-only log), `session.js` (mock-only storage core;
+  avoids an auth ↔ activity import cycle). `invitationApi.js` write operations
+  call `assertCan` + `logActivity`.
+- Demo accounts (mock only): `owner@` / `admin@` / `designer@envelope.test`,
+  password `envelope123`. Pick them on the login page to test each role.
+- ⚠️ **Mock = not secure.** Everything is in this browser's localStorage and
+  the guard runs client-side. `IS_MOCK_AUTH` shows warning banners. Don't treat
+  any of it as protection until the backend (BACKEND.md §5–§7) is in place.
+- `?next=` redirects go through `lib/redirect.js` `safeAdminPath()` (admin
+  paths only, which blocks open redirects).
+
+### Public site (marketing pages)
+
+Structure modeled on thedigitalyes.com (layout only — all copy is original and
+multi-occasion). Rules:
+
+- **All words, prices, stats and reviews live in
+  `features/landing/siteContent.js`.** Components never hardcode copy. The
+  stats, reviews and prices there are **SAMPLE placeholders** and are labelled
+  as such on the page — replace them with real data before launch; never
+  publish invented ratings or testimonials.
+- **Only published templates appear** (`listPublishedTemplates` /
+  `getPublishedTemplate`) — in `LiveDemo` and `DesignsGallery`. Never projects.
+- **The phone mock is `ui/PhoneFrame`**: a true 430×932 screen (size
+  container, so the invitation's `cqw/cqh` resolve like a real phone) scaled
+  with `--phone-scale`. Set the scale on a parent class, not inline.
+- **Magic UI ports are plain CSS** (no Tailwind) and all respect
+  `prefers-reduced-motion`. `MorphingText` in the hero is `aria-hidden` with
+  an `sr-only` full sentence, so screen readers don't hear the cycling words.
+- The `(site)` route group is the only place with the marketing header.
+  `/admin` and `/i/<token>` stay outside it (the client invitation is bare).
+- The footer newsletter form is UI-only (no email is sent) until a backend /
+  email provider exists.
+
+### Sharing a project with its client (private link)
+
+A finished project is delivered to the client at **`/i/<token>`**. The token is
+the only key: without the exact link, nobody can see the invitation.
+
+Admin flow (Projects tab → **Share**):
+
+- **Publish & create link** → `shareProject(id)`: sets the project to `done`
+  and issues `share = { enabled: true, token, createdAt }`.
+- **Copy** the link and send it to the client.
+- **New link** → `regenerateShareLink(id)`: replaces the token; the old link
+  stops working immediately (use it if a link leaked).
+- **Stop sharing** → `stopSharing(id)`: link turns off. Publishing again
+  issues a **brand-new** token, so an old link never comes back.
+
+Rules (do not weaken these):
+
+- **The public route never accepts a document id** and never resolves a
+  template. `getSharedInvitation(token)` only matches `kind === "project"` with
+  `share.enabled` and an exact token. Unknown/disabled/malformed tokens return
+  `null` → the viewer shows "This invitation link isn't valid". There is **no
+  fallback** to another document. (`getDocument(id)` is admin-only; it must
+  never be used by a public page — the landing preview uses
+  `getPublishedTemplate(id)`, which returns only published templates.)
+- **Tokens are unguessable:** 24 bytes from `crypto.getRandomValues`, base64url
+  (32 chars, 192 bits). Never derive them from the id, title, or names.
+- **The client gets a render-only copy.** `id`, admin `title`, `versions`,
+  `share`, `sourceTemplateId`, and `meta` are stripped before rendering.
+- **Rollback keeps the current link.** `rollbackTo` restores content but keeps
+  `d.share`, so restoring an old version can't revive a replaced token. New
+  projects copied from a template start with `share: undefined`.
+- **The viewer is the invitation and nothing else.**
+  `features/invitation/SharedInvitation.jsx` has no back button, no studio or
+  "designs" links, no admin chrome. The page sets `robots: noindex, nofollow`
+  (private links stay out of search) and `referrer: no-referrer` (clicking the
+  map link won't leak the token through the Referer header).
+
+> **Limitation (important): the mock can't deliver to a client yet.** Data
+> lives in the admin browser's `localStorage`, so `/i/<token>` only works in
+> that same browser (good for testing). A client opening the link on their own
+> phone will see "not valid" because their browser has no data. Real delivery
+> needs the backend: store documents server-side, resolve
+> `GET /api/invite/:token` **on the server** (compare tokens there, return only
+> the render copy), and render `/i/[slug]` from that response. The token check
+> must live on the server — a check in browser code is not security.
+>
+> Also note: `/admin` has **no authentication yet**. It's safe today only
+> because the data never leaves the admin's browser. Add auth before the
+> admin and its data move to a real server.
 
 ### Create flows use an in-app dialog (not window.prompt)
 

@@ -1,0 +1,57 @@
+/* True-resolution phone, displayed smaller via transform.
+   458 x 960 = 430 x 932 screen + 14px bezel on each side. */
+.phone-shell {
+  --phone-scale: 0.6;
+  position: relative;
+  flex: none;
+  width: calc(458px * var(--phone-scale));
+  height: calc(960px * var(--phone-scale));
+}
+
+.phone {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 458px;
+  height: 960px;
+  padding: 14px;
+  border-radius: 62px;
+  background: linear-gradient(160deg, #2b2826, #141312);
+  box-shadow:
+    0 0 0 2px #3a3634,
+    0 50px 90px -40px rgba(60, 35, 30, 0.55),
+    0 30px 60px -30px rgba(60, 35, 30, 0.4);
+  transform: scale(var(--phone-scale));
+  transform-origin: top left;
+}
+
+/* dynamic-island style pill */
+.phone-island {
+  position: absolute;
+  top: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 126px;
+  height: 36px;
+  border-radius: 20px;
+  background: #0b0a0a;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.phone-screen {
+  position: relative;
+  width: 430px;
+  height: 932px;
+  border-radius: 48px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: #fff;
+  isolation: isolate;
+  /* size container: cqw/cqh resolve against the real phone screen */
+  container-type: size;
+  scrollbar-width: none;
+}
+.phone-screen::-webkit-scrollbar {
+  display: none;
+}

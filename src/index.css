@@ -62,17 +62,27 @@
   padding: 0;
 }
 
-html,
-body,
-#root {
-  height: 100%;
-}
-
+/* The WINDOW must be the only scroller. Don't put `height: 100%` on body or
+   `overflow-x: hidden` on html+body: together they turn <body> into its own
+   scroll container, which gives TWO scrollbars, breaks smooth anchor scrolling
+   (that targets the window) and keeps window.scrollY at 0.
+   (ARCHITECTURE.md gotcha.) */
 html,
 body {
-  /* safety net: never allow a horizontal scrollbar to appear */
+  min-height: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  /* safety net against a horizontal scrollbar; `clip` (unlike `hidden`)
+     does NOT create a scroll container */
+  overflow-x: clip;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 body {

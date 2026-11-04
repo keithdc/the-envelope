@@ -116,6 +116,18 @@
  */
 
 /**
+ * Private client sharing for a PROJECT. The client opens `/i/<token>`; the
+ * token is the ONLY key — the document id is never accepted publicly.
+ * Regenerating replaces the token (old links stop working); disabling keeps
+ * the token on record but the link resolves to "not valid".
+ * Templates never have a share config.
+ * @typedef {Object} ShareConfig
+ * @property {boolean} enabled    link works only while true
+ * @property {string} token       unguessable, URL-safe (crypto random)
+ * @property {string} createdAt   ISO — when the current token was issued
+ */
+
+/**
  * The complete, serializable document. Builder output === renderer input.
  * @typedef {Object} InvitationDocument
  * @property {string} id
@@ -130,6 +142,7 @@
  * @property {SectionConfig[]} sections
  * @property {Object} [scratch]       the scratch reveal stage config
  * @property {DocumentVersion[]} [versions]  append-only rollback history
+ * @property {ShareConfig} [share]    (projects) private client link
  * @property {Object} meta
  * @property {string} meta.createdAt
  * @property {string} meta.updatedAt
@@ -148,6 +161,7 @@
  * @property {string} [sourceTemplateId]
  * @property {string[]} [preview]
  * @property {string} updatedAt
+ * @property {boolean} [shared]     (projects) client link currently active
  */
 
 /* --------------------------------------------------------------------- */
@@ -176,4 +190,4 @@
  * @property {EditorField[]} fields
  */
 
-export {}
+export {};

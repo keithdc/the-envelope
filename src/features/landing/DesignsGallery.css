@@ -1,0 +1,202 @@
+.dg-empty {
+  text-align: center;
+  color: #9a908a;
+  font-style: italic;
+  padding: 24px 0;
+}
+
+.dg-group + .dg-group {
+  margin-top: 48px;
+}
+.dg-group-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-serif);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 15px;
+  color: var(--rose-deep);
+  margin-bottom: 18px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(58, 51, 48, 0.1);
+}
+
+.dg-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 22px;
+}
+
+/* ---- card ---- */
+.dg-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow:
+    0 0 0 1px rgba(58, 51, 48, 0.07),
+    0 20px 40px -30px rgba(58, 51, 48, 0.55);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.dg-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 0 0 1px rgba(58, 51, 48, 0.07),
+    0 28px 50px -30px rgba(58, 51, 48, 0.6);
+}
+
+.dg-cover {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #fff;
+}
+.dg-cover-seal {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  font-size: 22px;
+  background: rgba(255, 255, 255, 0.22);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.45);
+}
+.dg-cover-title {
+  font-family: var(--font-script);
+  font-size: 34px;
+  line-height: 1;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+  padding-inline: 12px;
+  text-align: center;
+}
+
+.dg-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 16px 18px 18px;
+}
+.dg-cat {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--rose-deep);
+}
+.dg-title {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: 20px;
+}
+.dg-preview {
+  margin-top: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  border-radius: 999px;
+  padding: 9px 15px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  background: rgba(201, 138, 134, 0.14);
+  cursor: pointer;
+}
+.dg-preview:hover {
+  background: rgba(201, 138, 134, 0.26);
+}
+.dg-preview:focus-visible,
+.dg-dialog-close:focus-visible {
+  outline: 2px solid var(--rose-deep);
+  outline-offset: 2px;
+}
+
+/* ---- preview dialog ---- */
+.dg-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(32, 26, 24, 0.62);
+  backdrop-filter: blur(6px);
+  overflow-y: auto;
+}
+.dg-dialog {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+}
+.dg-dialog-head {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.dg-dialog-title {
+  font-family: var(--font-serif);
+  font-size: 22px;
+}
+.dg-dialog-close {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.16);
+  cursor: pointer;
+}
+.dg-dialog-close:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+.dg-dialog-hint {
+  font-size: 14px;
+  color: #e3d6cd;
+  margin-bottom: 6px;
+}
+
+/* phone sized to the viewport height */
+.dg-phone {
+  --phone-scale: 0.72;
+}
+@media (max-height: 860px) {
+  .dg-phone {
+    --phone-scale: 0.62;
+  }
+}
+@media (max-height: 740px) {
+  .dg-phone {
+    --phone-scale: 0.52;
+  }
+}
+@media (max-width: 380px) {
+  .dg-phone {
+    --phone-scale: 0.6;
+  }
+}
+
+.dg-loading {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  color: #9a908a;
+}

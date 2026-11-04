@@ -1,0 +1,85 @@
+.shimmer-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  overflow: hidden;
+  border: none;
+  border-radius: 999px;
+  padding: 13px 24px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
+}
+.shimmer-btn:hover {
+  transform: translateY(-1px);
+}
+.shimmer-btn:focus-visible {
+  outline: 3px solid rgba(169, 98, 93, 0.45);
+  outline-offset: 3px;
+}
+
+.shimmer-btn--primary {
+  color: #fff;
+  background: linear-gradient(135deg, #3a3330, #5a4640);
+  box-shadow:
+    0 10px 24px -12px rgba(58, 51, 48, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+/* the moving light sweep */
+.shimmer-btn--primary::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    110deg,
+    transparent 30%,
+    rgba(255, 233, 200, 0.45) 50%,
+    transparent 70%
+  );
+  transform: translateX(-120%);
+  animation: shimmer-sweep 3.2s ease-in-out infinite;
+}
+
+.shimmer-btn--ghost {
+  color: var(--ink, #3a3330);
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: inset 0 0 0 1px rgba(58, 51, 48, 0.16);
+  backdrop-filter: blur(6px);
+}
+.shimmer-btn--ghost:hover {
+  background: #fff;
+}
+
+.shimmer-btn-label {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@keyframes shimmer-sweep {
+  0%,
+  35% {
+    transform: translateX(-120%);
+  }
+  70%,
+  100% {
+    transform: translateX(120%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shimmer-btn--primary::before {
+    animation: none;
+    display: none;
+  }
+}

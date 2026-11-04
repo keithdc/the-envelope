@@ -37,6 +37,7 @@ import "./BuilderApp.css";
 export default function BuilderApp({ docId, onBack }) {
   const [doc, setDoc] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState("");
   const [savedAt, setSavedAt] = useState(null);
   const [editingId, setEditingId] = useState(null); // which section row is open
   const [previewKey, setPreviewKey] = useState(0); // bump to restart the preview
@@ -95,10 +96,16 @@ export default function BuilderApp({ docId, onBack }) {
 
   const handleSave = async () => {
     setSaving(true);
-    const saved = await saveInvitation(doc);
-    setDoc(saved);
-    setSaving(false);
-    setSavedAt(Date.now());
+    setSaveError("");
+    try {
+      const saved = await saveInvitation(doc);
+      setDoc(saved);
+      setSavedAt(Date.now());
+    } catch (err) {
+      setSaveError(err.message);
+    } finally {
+      setSaving(false);
+    }
   };
 
   // ---- couple / event-level content ----
@@ -235,6 +242,12 @@ export default function BuilderApp({ docId, onBack }) {
             )}
           </button>
         </header>
+
+        {saveError && (
+          <p className="builder-save-error" role="alert">
+            {saveError}
+          </p>
+        )}
 
         {/* General: typography system (two main fonts) */}
         <section className="builder-group">

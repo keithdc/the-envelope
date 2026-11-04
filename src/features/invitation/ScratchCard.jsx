@@ -24,15 +24,20 @@ export default function ScratchCard({ event, onRevealed }) {
   const rafRef = useRef(null);
   const [percent, setPercent] = useState(0);
   const [faded, setFaded] = useState(false);
+  // The photo is only attached once the foil has actually been painted, so the
+  // picture can never flash (uncovered, or at full natural size) before the
+  // foil covers it.
+  const [foilReady, setFoilReady] = useState(false);
 
   // Paint the foil to fill the circular canvas. Repainted on resize.
+  // Returns true once it really painted (the canvas had a laid-out size).
   const paintFoil = () => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas) return false;
     const ctx = canvas.getContext("2d");
     const rect = canvas.getBoundingClientRect();
-    // Bail if not laid out yet (zero size); the rAF in the effect retries.
-    if (rect.width === 0 || rect.height === 0) return;
+    // Not laid out yet (zero size) — the effect below retries next frame.
+    if (rect.width === 0 || rect.height === 0) return false;
     const dpr = window.devicePixelRatio || 1;
 
     canvas.width = rect.width * dpr;
@@ -62,21 +67,27 @@ export default function ScratchCard({ event, onRevealed }) {
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText("scratch", rect.width / 2, rect.height / 2);
+    return true;
   };
 
   useEffect(() => {
-    // Paint after layout settles. Two rAFs guarantee the canvas has its final
-    // CSS-computed size (calc(100% - 20px) depends on the parent circle).
-    const raf1 = requestAnimationFrame(() => {
-      const raf2 = requestAnimationFrame(paintFoil);
-      rafRef.current = raf2;
-    });
+    // Paint as soon as the canvas has its final CSS size, retrying each frame
+    // until it does (bounded, ~1s). Only then is the photo attached.
+    let tries = 0;
+    const tick = () => {
+      if (paintFoil()) {
+        setFoilReady(true);
+        return;
+      }
+      if (tries++ < 60) rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+
     const onResize = () => {
       if (!revealedRef.current) paintFoil();
     };
     window.addEventListener("resize", onResize);
     return () => {
-      cancelAnimationFrame(raf1);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       window.removeEventListener("resize", onResize);
     };
@@ -163,7 +174,19 @@ export default function ScratchCard({ event, onRevealed }) {
           {/* The photo (or placeholder) revealed under the foil */}
           <div className="medallion-photo">
             {event.photo ? (
-              <img src={event.photo} alt={event.couple} />
+              // A background image (not <img>) has no intrinsic size, so it
+              // can't render full-screen even if this stylesheet loads late.
+              // It's attached only after the foil is painted over it.
+              <div
+                className="medallion-photo-img"
+                role="img"
+                aria-label={event.couple}
+                style={
+                  foilReady
+                    ? { backgroundImage: `url("${event.photo}")` }
+                    : undefined
+                }
+              />
             ) : (
               <div className="photo-placeholder">
                 <Heart className="photo-icon" aria-hidden="true" />

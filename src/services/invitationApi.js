@@ -13,6 +13,7 @@
  *
  * Future backend mapping:
  *   listPublishedTemplates()        -> GET  /api/templates?status=published   (PUBLIC)
+ *   getPublishedTemplate(id)        -> GET  /api/templates/:id  (PUBLIC, published only)
  *   listTemplates()                 -> GET  /api/templates                    (admin)
  *   listProjects()                  -> GET  /api/projects                     (owner only, PRIVATE)
  *   getDocument(id)                 -> GET  /api/documents/:id
@@ -22,6 +23,10 @@
  *   listVersions(docId)             -> GET  /api/documents/:id/versions
  *   rollbackTo(docId, version)      -> POST /api/documents/:id/rollback { version }
  *   listCategories()                -> GET  /api/categories
+ *   shareProject(id)                -> POST /api/projects/:id/share          (admin)
+ *   regenerateShareLink(id)         -> POST /api/projects/:id/share/rotate   (admin)
+ *   stopSharing(id)                 -> DELETE /api/projects/:id/share        (admin)
+ *   getSharedInvitation(token)      -> GET  /api/invite/:token   (PUBLIC, token is the only key)
  *   uploadAsset(file)               -> POST /api/assets  (multipart)
  *
  * VERSIONING: both templates AND projects keep an APPEND-ONLY version history.
@@ -32,6 +37,20 @@
 import { mockTemplates, mockProjects } from "./mockStore.js";
 import { mockDocument } from "./mockDocument.js";
 import { mockCategories, DEFAULT_CATEGORY } from "./categories.js";
+import { assertCan } from "./session.js";
+import { logActivity } from "./activityApi.js";
+
+// Admin write operations check the signed-in user's permission (mock of the
+// server-side check) and append to the activity log. Public reads
+// (published templates, shared invitations) need no session.
+const track = (action, d, detail) =>
+  logActivity({
+    action,
+    targetKind: d.kind,
+    targetId: d.id,
+    targetTitle: d.title,
+    detail,
+  });
 
 const KEY = (id) => `envelope:doc:${id}`;
 const SEEDED = "envelope:seeded";
@@ -78,6 +97,7 @@ const toSummary = (d) => ({
   sourceTemplateId: d.sourceTemplateId,
   preview: [d.theme?.rose, d.theme?.roseDeep, d.theme?.gold].filter(Boolean),
   updatedAt: d.meta?.updatedAt,
+  shared: d.kind === "project" && !!d.share?.enabled,
 });
 
 /* ---------------------------------------------------------------- */
@@ -102,6 +122,18 @@ export async function listPublishedTemplates() {
     .map(toSummary);
 }
 
+/**
+ * PUBLIC: load one PUBLISHED template for the landing preview. Returns null
+ * for anything else (drafts, projects, unknown ids) — no fallback.
+ */
+export async function getPublishedTemplate(id) {
+  await delay();
+  ensureSeeded();
+  const raw = hasLS() && id && localStorage.getItem(KEY(id));
+  const d = raw ? JSON.parse(raw) : null;
+  return d?.kind === "template" && d.meta?.status === "published" ? d : null;
+}
+
 /** ADMIN: all templates (draft + published). */
 export async function listTemplates() {
   await delay();
@@ -116,6 +148,7 @@ export async function listTemplates() {
  */
 export async function createTemplate(title, category = DEFAULT_CATEGORY) {
   await delay();
+  assertCan("templates.edit");
   const now = nowISO();
   const doc = {
     ...clone(mockDocument),
@@ -137,15 +170,18 @@ export async function createTemplate(title, category = DEFAULT_CATEGORY) {
   };
   doc.versions[0].snapshot = clone({ ...doc, versions: undefined });
   localStorage.setItem(KEY(doc.id), JSON.stringify(doc));
+  track("template.created", doc);
   return doc;
 }
 
 /** Flip a template to published (it becomes public + reusable). */
 export async function publishTemplate(id) {
   await delay();
+  assertCan("templates.publish");
   const d = JSON.parse(localStorage.getItem(KEY(id)));
   d.meta = { ...d.meta, status: "published", updatedAt: nowISO() };
   localStorage.setItem(KEY(id), JSON.stringify(d));
+  track("template.published", d);
   return d;
 }
 
@@ -167,6 +203,7 @@ export async function listProjects() {
  */
 export async function createProjectFromTemplate(templateId, title) {
   await delay();
+  assertCan("projects.edit");
   const tpl = JSON.parse(localStorage.getItem(KEY(templateId)));
   if (!tpl) throw new Error(`template not found: ${templateId}`);
   const now = nowISO();
@@ -177,6 +214,7 @@ export async function createProjectFromTemplate(templateId, title) {
     category: tpl.category ?? DEFAULT_CATEGORY, // inherit the template's category
     title: title || `${tpl.title} — Draft`,
     sourceTemplateId: templateId,
+    share: undefined, // a new project is never shared until the admin says so
     versions: [
       {
         version: 1,
@@ -190,6 +228,7 @@ export async function createProjectFromTemplate(templateId, title) {
   // the first version's snapshot should reflect the project's own identity
   doc.versions[0].snapshot = clone({ ...doc, versions: undefined });
   localStorage.setItem(KEY(doc.id), JSON.stringify(doc));
+  track("project.created", doc, `from ${tpl.title}`);
   return doc;
 }
 
@@ -203,6 +242,7 @@ export async function listVersions(projectId) {
 /** Restore a project to a prior version (keeps history; appends the restore). */
 export async function rollbackTo(projectId, version) {
   await delay();
+  assertCan("versions.rollback");
   const d = JSON.parse(localStorage.getItem(KEY(projectId)));
   const target = (d.versions ?? []).find((v) => v.version === version);
   if (!target) throw new Error(`version ${version} not found`);
@@ -212,6 +252,9 @@ export async function rollbackTo(projectId, version) {
     kind: d.kind, // preserve kind (templates are versioned too)
     category: d.category,
     sourceTemplateId: d.sourceTemplateId,
+    // keep the CURRENT share link: a rollback restores content, it must never
+    // revive a regenerated/revoked token from an old snapshot
+    share: d.share,
     versions: d.versions, // preserve full history
     meta: { ...d.meta, updatedAt: nowISO() },
   };
@@ -227,7 +270,110 @@ export async function rollbackTo(projectId, version) {
     },
   ];
   localStorage.setItem(KEY(projectId), JSON.stringify(restored));
+  track("version.rolled_back", restored, `restored v${version}`);
   return restored;
+}
+
+/* ---------------------------------------------------------------- */
+/* CLIENT SHARING (projects only)                                    */
+/* ---------------------------------------------------------------- */
+/*
+ * A project is shown to its client at /i/<token>. The token is the ONLY key:
+ * the public route never accepts a document id, never resolves templates, and
+ * never falls back to another document. Without the exact token, nothing shows.
+ */
+
+const readDoc = (id) => {
+  const raw = hasLS() && localStorage.getItem(KEY(id));
+  return raw ? JSON.parse(raw) : null;
+};
+const writeDoc = (d) => localStorage.setItem(KEY(d.id), JSON.stringify(d));
+
+/** 192 bits of crypto randomness, URL-safe (base64url, 32 chars). */
+function newShareToken() {
+  const bytes = new Uint8Array(24);
+  crypto.getRandomValues(bytes);
+  return btoa(String.fromCharCode(...bytes))
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
+}
+
+function requireProject(id) {
+  const d = readDoc(id);
+  if (!d || d.kind !== "project") throw new Error(`project not found: ${id}`);
+  return d;
+}
+
+/** ADMIN: the current share config of a project (or null). */
+export async function getShare(projectId) {
+  await delay();
+  return readDoc(projectId)?.share ?? null;
+}
+
+/**
+ * ADMIN: publish a project to its client. Marks it `done` and enables a link.
+ * If it was previously stopped, a NEW token is issued so an old (possibly
+ * leaked) link never comes back to life.
+ */
+export async function shareProject(projectId) {
+  await delay();
+  assertCan("projects.share");
+  const d = requireProject(projectId);
+  const now = nowISO();
+  if (!d.share?.enabled) {
+    d.share = { enabled: true, token: newShareToken(), createdAt: now };
+  }
+  d.meta = { ...d.meta, status: "done", updatedAt: now };
+  writeDoc(d);
+  track("share.created", d);
+  return d.share;
+}
+
+/** ADMIN: replace the link. The old link stops working immediately. */
+export async function regenerateShareLink(projectId) {
+  await delay();
+  assertCan("projects.share");
+  const d = requireProject(projectId);
+  const now = nowISO();
+  d.share = { enabled: true, token: newShareToken(), createdAt: now };
+  d.meta = { ...d.meta, updatedAt: now };
+  writeDoc(d);
+  track("share.regenerated", d);
+  return d.share;
+}
+
+/** ADMIN: turn the link off. The link shows "not valid" from now on. */
+export async function stopSharing(projectId) {
+  await delay();
+  assertCan("projects.share");
+  const d = requireProject(projectId);
+  if (d.share) d.share = { ...d.share, enabled: false };
+  d.meta = { ...d.meta, updatedAt: nowISO() };
+  writeDoc(d);
+  track("share.stopped", d);
+  return d.share ?? null;
+}
+
+/**
+ * PUBLIC: resolve a client link. Returns a render-only copy of the project, or
+ * null if the token is unknown, disabled, or malformed. Internal fields (id,
+ * admin title, version history, share token, source template) are stripped so
+ * the client only receives what the invitation needs to render.
+ */
+export async function getSharedInvitation(token) {
+  await delay();
+  if (typeof token !== "string" || !/^[A-Za-z0-9_-]{32}$/.test(token)) {
+    return null;
+  }
+  const d = allDocs().find(
+    (x) => x.kind === "project" && x.share?.enabled && x.share.token === token,
+  );
+  if (!d) return null;
+  // eslint-disable-next-line no-unused-vars
+  const { id, title, versions, share, sourceTemplateId, meta, ...render } =
+    clone(d);
+  return render;
 }
 
 /* ---------------------------------------------------------------- */
@@ -252,6 +398,7 @@ export async function getDocument(id) {
  */
 export async function saveDocument(doc, { label } = {}) {
   await delay();
+  assertCan(doc.kind === "project" ? "projects.edit" : "templates.edit");
   const now = nowISO();
   const next = { ...doc, meta: { ...doc.meta, updatedAt: now } };
 
@@ -270,6 +417,11 @@ export async function saveDocument(doc, { label } = {}) {
     },
   ];
   localStorage.setItem(KEY(next.id), JSON.stringify(next));
+  track(
+    next.kind === "project" ? "project.saved" : "template.saved",
+    next,
+    `v${nextV}`,
+  );
   return next;
 }
 

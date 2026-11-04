@@ -24,10 +24,20 @@
  * @typedef {import('./document.js').SectionConfig} SectionConfig
  * @typedef {import('./document.js').DocumentKind} DocumentKind
  * @typedef {import('./document.js').DocumentVersion} DocumentVersion
+ * @typedef {import('./document.js').ShareConfig} ShareConfig
  * @typedef {import('./document.js').InvitationDocument} InvitationDocument
  * @typedef {import('./document.js').DocumentSummary} DocumentSummary
  * @typedef {import('./document.js').EditorField} EditorField
  * @typedef {import('./document.js').SectionDef} SectionDef
+ *
+ * @typedef {import('./auth.js').Role} Role
+ * @typedef {import('./auth.js').UserStatus} UserStatus
+ * @typedef {import('./auth.js').User} User
+ * @typedef {import('./auth.js').Session} Session
+ * @typedef {import('./auth.js').ActivityAction} ActivityAction
+ * @typedef {import('./auth.js').ActivityEvent} ActivityEvent
+ * @typedef {import('./auth.js').AppSettings} AppSettings
+ * @typedef {import('./auth.js').Permission} Permission
  */
 
-export {}
+export {};

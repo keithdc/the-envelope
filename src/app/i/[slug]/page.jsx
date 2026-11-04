@@ -1,35 +1,30 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { getDocument } from "../../../services/invitationApi.js";
-import BuilderPreview from "../../../features/builder/BuilderPreview.jsx";
+import SharedInvitation from "../../../features/invitation/SharedInvitation.jsx";
 
 /**
- * /i/[slug] — PUBLIC invitation view (stub).
+ * /i/<token> — the private invitation link a client receives.
  * -------------------------------------------------------------------------
- * Today this reads a document by id from the mock API and runs the real
- * invitation flow. Once a backend exists, `slug` becomes a published
- * invitation's public slug and this page server-renders it (SSR) for fast
- * first paint + social/OG previews. The viewer stays a client component
- * because the flow is interactive (envelope → scratch → site).
+ * The URL segment is a SHARE TOKEN, never a document id. Only an enabled
+ * project share token resolves (see getSharedInvitation); templates, raw ids,
+ * and stale/turned-off links all show "not valid".
+ *
+ * Server component so we can set metadata:
+ *  - robots noindex/nofollow: private links must never appear in search
+ *  - referrer no-referrer: clicking e.g. the map link won't leak the token
+ *    to another site through the Referer header
  */
-export default function PublicInvitePage() {
-  const { slug } = useParams();
-  const [doc, setDoc] = useState(null);
-  const [missing, setMissing] = useState(false);
+export const metadata = {
+  title: "You're Invited",
+  robots: {
+    index: false,
+    follow: false,
+    nocache: true,
+    googleBot: { index: false, follow: false },
+  },
+  referrer: "no-referrer",
+};
 
-  useEffect(() => {
-    getDocument(slug).then((d) => (d ? setDoc(d) : setMissing(true)));
-  }, [slug]);
-
-  if (missing)
-    return <div className="builder-loading">Invitation not found.</div>;
-  if (!doc) return <div className="builder-loading">Loading…</div>;
-
-  return (
-    <div style={{ minHeight: "100dvh" }}>
-      <BuilderPreview doc={doc} />
-    </div>
-  );
+// Next 15: route params are async in server components.
+export default async function SharedInvitePage({ params }) {
+  const { slug } = await params;
+  return <SharedInvitation token={slug} />;
 }

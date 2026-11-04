@@ -1,0 +1,41 @@
+/* A conic highlight that spins; a mask keeps only the border ring visible. */
+@property --bb-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.border-beam {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: var(--bb-width, 2px);
+  pointer-events: none;
+  z-index: 4;
+  background: conic-gradient(
+    from var(--bb-angle),
+    transparent 0deg,
+    transparent 250deg,
+    var(--bb-from) 300deg,
+    var(--bb-to) 340deg,
+    transparent 360deg
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: border-beam-spin var(--bb-duration, 8s) linear infinite;
+}
+
+@keyframes border-beam-spin {
+  to {
+    --bb-angle: 360deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .border-beam {
+    animation: none;
+  }
+}
